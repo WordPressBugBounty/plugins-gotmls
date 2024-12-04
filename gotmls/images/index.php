@@ -2,7 +2,7 @@
 /**
  * GOTMLS Plugin Global Variables and Functions
  * @package GOTMLS
- * @since 4.23.71
+ * @since 4.23.73
 */
 
 define("GOTMLS_plugin_path", dirname(dirname(__FILE__))."/");
@@ -48,7 +48,7 @@ $GLOBALS["GOTMLS"] = array(
 		"threat_files" => array("htaccess"=>".htaccess","timthumb"=>"thumb.php"), 
 		"threat_levels" => array(__("Database Injections",'gotmls')=>"db_scan",__("htaccess Threats",'gotmls')=>"htaccess",__("TimThumb Exploits",'gotmls')=>"timthumb",__("Known Threats",'gotmls')=>"known",__("Core File Changes",'gotmls')=>"wp_core",__("Potential Threats",'gotmls')=>"potential"), 
 		"apache" => array(),
-		"skip_ext"=>array("png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "psd", "svg", "webp", "doc", "docx", "ttf", "fla", "flv", "mov", "mp3", "pdf", "css", "pot", "po", "mo", "so", "exe", "zip", "7z", "gz", "rar"),
+		"skip_ext"=>array("png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "psd", "svg", "webp", "doc", "docx", "otf", "ttf", "fla", "flv", "mov", "mp3", "pdf", "css", "pot", "po", "mo", "so", "exe", "zip", "7z", "gz", "rar"),
 		"execution_time" => 60,
 		"default" => array("msg_position" => array("80px", "40px", "400px", "600px")),
 		"Definition" => array("Default" => "CCIGG"),
@@ -1467,7 +1467,7 @@ function GOTMLS_db_scan($id = 0) {
 					$scan_replace = str_replace("db_scan", "Database for ", GOTMLS_htmlspecialchars($_GET["GOTMLS_scan"]));
 					$db_scan_a = array(GOTMLS_sanitize(substr($_GET["GOTMLS_scan"], 8)) => $GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"][substr($_GET["GOTMLS_scan"], 8)]);
 				} elseif (isset($_GET["GOTMLS_only_file"]) && strlen($_GET["GOTMLS_only_file"]) && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"][GOTMLS_decode($_GET["GOTMLS_only_file"])])) {
-					$scan_replace = str_replace("db_scan", "Database only ".(isset($_GET["limit"]) && is_numeric($_GET["limit"])) ? (INT) $_GET["limit"] : ""." for ", GOTMLS_htmlspecialchars("db_scan=".htmlspecialchars_decode(GOTMLS_decode($_GET["GOTMLS_only_file"]))));
+					$scan_replace = str_replace("db_scan", ("Database only $and for "), GOTMLS_htmlspecialchars("db_scan=".htmlspecialchars_decode(GOTMLS_decode($_GET["GOTMLS_only_file"]))));
 					$_GET["GOTMLS_scan"] = "db_scan=".GOTMLS_decode($_GET["GOTMLS_only_file"]);
 					$db_scan_a = array(GOTMLS_decode($_GET["GOTMLS_only_file"]) => $GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"][GOTMLS_decode($_GET["GOTMLS_only_file"])]);
 				} else {
@@ -1823,7 +1823,7 @@ function GOTMLS_check_file($file) {
 		echo GOTMLS_return_threat("scanned", "checked", $file, GOTMLS_error_link(__("CORE file was not modified!",'gotmls'), $file, ""));
 	elseif (($filesize==0) || ($filesize>((isset($_REQUEST["oversize"])&&is_numeric($_REQUEST["oversize"]))?$_REQUEST["oversize"]:2934567)))
 		echo GOTMLS_return_threat("skipped", "blocked", $file, GOTMLS_error_link(__("Skipped because of file size!",'gotmls')." ($filesize bytes)", $file, "potential"));
-	elseif (in_array(GOTMLS_get_ext($file), $GLOBALS["GOTMLS"]["tmp"]["skip_ext"]) && !(preg_match('/(?:(?:shim|social[0-9]*+)\.png|\/\.[^\/]++$/i', $file)))
+	elseif (in_array(GOTMLS_get_ext($file), $GLOBALS["GOTMLS"]["tmp"]["skip_ext"]) && !(preg_match('/(?:(?:shim|social\d*+)\.png|\/\.[^\/]++)$/i', $file)))
 		echo GOTMLS_return_threat("skipped", "blocked", $file, GOTMLS_error_link(__("Skipped because of file extention!",'gotmls'), $file, "potential"));
 	elseif (isset($GLOBALS["GOTMLS"]["tmp"]["custom_whitelist"]) && isset($GLOBALS["GOTMLS"]["tmp"]["custom_whitelist"]["$MD5O$filesize"]))
 		echo GOTMLS_return_threat("skipped", "blocked", $file, GOTMLS_error_link(__("Skipped because file was Whitelisted!",'gotmls'), $file, "potential"));
@@ -1875,7 +1875,7 @@ function GOTMLS_scandir($dir) {
 						if (is_file($path)) {
 							$file_ext = GOTMLS_get_ext($file);
 							$filesize = @filesize($path);
-							if ((in_array($file_ext, $GLOBALS["GOTMLS"]["tmp"]["skip_ext"]) && !(preg_match('/social[0-9]*\.png$/i', $file))) || ($filesize==0) || ($filesize>((isset($_REQUEST["oversize"])&&is_numeric($_REQUEST["oversize"]))?$_REQUEST["oversize"]:2934567)))
+							if ((in_array($file_ext, $GLOBALS["GOTMLS"]["tmp"]["skip_ext"]) && !(preg_match('/(?:(?:shim|social\d*+)\.png|\/\.[^\/]++)$/i', $file))) || ($filesize==0) || ($filesize>((isset($_REQUEST["oversize"])&&is_numeric($_REQUEST["oversize"]))?$_REQUEST["oversize"]:2934567)))
 								echo GOTMLS_return_threat("skipped", "blocked", $path, GOTMLS_error_link(sprintf(__('Skipped because of file size (%1$s bytes) or file extention (%2$s)!','gotmls'), $filesize, $file_ext), $file, "potential"));
 							else
 								echo "/*-->*"."/\nscanfilesArKeys.push('".GOTMLS_encode($dir)."&GOTMLS_only_file=".GOTMLS_encode($file, "D")."');\nscanfilesArNames.push('Re-Checking ".GOTMLS_strip4java($path)."');\n/*<!--*"."/".GOTMLS_return_threat("dirs", "wait", $path);

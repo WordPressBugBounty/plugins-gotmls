@@ -7,10 +7,10 @@ Donate link: https://gotmls.net/donate/
 Tags: anti-malware, security, scanner, brute-force, firewall
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.71
-Stable tag: 4.23.71
+Version: 4.23.73
+Stable tag: 4.23.73
 Requires at least: 3.3
-Tested up to: 6.6.2
+Tested up to: 6.7.1
 
 This Anti-Malware scanner searches for Malware, Viruses, and other security threats and vulnerabilities on your server and it helps you fix them.
 
@@ -99,6 +99,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. The Quarantine showing threats that have been fix already.
 
 == Changelog ==
+
+= 4.23.73 =
+* Added cleanup for old _session files.
+* Fixed hidden files exception to the skip by extention option in last update.
+* Fixed updates to manual session files when PHP sessions are not saves.
+* Checked code for compatibility with WordPress 6.7.1.
 
 = 4.23.71 =
 * Set autoload to false on the large values in wp_option.
@@ -490,6 +496,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * First versions available for WordPress (code removed, no longer compatible).
 
 == Upgrade Notice ==
+
+= 4.23.73 =
+* Added cleanup for old _session files, fxed hidden files exception to the skip by extention option and updates to manual session files when PHP sessions are not saves, and checked code for compatibility with WordPress 6.7.1.
 
 = 4.23.71 =
 Set autoload to false on the large values in wp_option, added exception to never skip hidden files, and checked code for compatibility with WordPress 6.6.2.

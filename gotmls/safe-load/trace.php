@@ -4,7 +4,7 @@
  * @package GOTMLS
 */
 
-define("GOTMLS_Version", '4.23.73');
+define("GOTMLS_Version", '4.23.77');
 define("GOTMLS_SAFELOAD_DIR", dirname(__FILE__)."/");
 define("GOTMLS_CHMOD_FILE", 0644);
 define("GOTMLS_CHMOD_DIR", 0755);
@@ -118,8 +118,8 @@ function GOTMLS_load_contents($TXT, $default_encoding = "UTF-8") {
 			foreach ($get_whitelist_rows as $get_whitelist_row)
 				$GLOBALS["GOTMLS"]["tmp"]["custom_whitelist"][$get_whitelist_row["chksum"]] = GOTMLS_decode($get_whitelist_row["post_title"]);
 	}
-	if (count($GLOBALS["GOTMLS"]["tmp"]["custom_whitelist"]) && isset($GLOBALS["GOTMLS"]["tmp"]["custom_whitelist"][md5($TXT)."O".strlen($TXT)]))
-		$GLOBALS["GOTMLS"]["tmp"]["contents_whitelist"] = md5($TXT)."O".strlen($TXT);
+	if (count($GLOBALS["GOTMLS"]["tmp"]["custom_whitelist"]) && isset($GLOBALS["GOTMLS"]["tmp"]["custom_whitelist"][md5($TXT)."O".GOTMLS_strlen($TXT)]))
+		$GLOBALS["GOTMLS"]["tmp"]["contents_whitelist"] = md5($TXT)."O".GOTMLS_strlen($TXT);
 	else
 		$GLOBALS["GOTMLS"]["tmp"]["contents_whitelist"] = false;
 	if (!(function_exists("mb_detect_encoding") && isset($GLOBALS["GOTMLS"]["tmp"]["default_encodings"]) && ($encoding = mb_detect_encoding($TXT, $GLOBALS["GOTMLS"]["tmp"]["default_encodings"])) && in_array($encoding, array('UCS-4', 'UCS-4LE', 'UTF-32', 'UTF-32BE', 'UTF-32LE', 'UTF-16', 'UTF-16BE', 'UTF-16LE', 'UTF-8', 'utf8', 'ASCII', 'US-ASCII', 'EUC-JP', 'eucJP', 'x-euc-jp', 'SJIS', 'eucJP-win', 'SJIS-win', 'CP932', 'MS932', 'Windows-31J', 'ISO-8859-1', 'ISO-8859-2', 'ISO-8859-3', 'ISO-8859-4', 'ISO-8859-5', 'ISO-8859-6', 'ISO-8859-7', 'ISO-8859-8', 'ISO-8859-9', 'ISO-8859-10', 'ISO-8859-13', 'ISO-8859-14', 'ISO-8859-15', 'ISO-8859-16', 'EUC-CN', 'EUC_CN', 'eucCN', 'gb2312', 'EUC-TW', 'EUC_TW', 'eucTW', 'BIG-5', 'CN-BIG5', 'BIG-FIVE', 'BIGFIVE', 'EUC-KR', 'EUC_KR', 'eucKR', 'KOI8-R', 'KOI8R')))) {
@@ -134,17 +134,21 @@ function GOTMLS_load_contents($TXT, $default_encoding = "UTF-8") {
 	if (function_exists("mb_regex_encoding"))
 		mb_regex_encoding($encoding);
 	$GLOBALS["GOTMLS"]["tmp"]["encoding"] = $encoding;
-	return strlen($TXT);
+	return GOTMLS_strlen($TXT);
+}
+
+function GOTMLS_strlen($TXT) {
+	return (is_string($TXT) ? (is_null($TXT) ? 0 : strlen($TXT)) : 0);
 }
 
 function GOTMLS_htmlentities($TXT, $flags = ENT_COMPAT, $encoding = "ASCII") {
-	$prelen = strlen($TXT);
+	$prelen = GOTMLS_strlen($TXT);
 	if ($prelen == 0)
 		return "";
 	if ($encoding == "ASCII")
 		$encoding = "UTF-8";
 	$encoded = htmlentities($TXT, $flags, $encoding);
-	if (strlen($encoded) == 0) {
+	if (GOTMLS_strlen($encoded) == 0) {
 		$encoding = "ISO-8859-1";
 		$encoded = htmlentities($TXT, $flags, $encoding);
 	}
@@ -154,13 +158,13 @@ function GOTMLS_htmlentities($TXT, $flags = ENT_COMPAT, $encoding = "ASCII") {
 }
 
 function GOTMLS_htmlspecialchars($TXT, $flags = ENT_COMPAT, $encoding = "ASCII") {
-	$prelen = strlen($TXT);
+	$prelen = GOTMLS_strlen($TXT);
 	if ($prelen == 0)
 		return "";
 	if ($encoding == "ASCII")
 		$encoding = "UTF-8";
 	$encoded = htmlspecialchars($TXT, $flags, $encoding);
-	if (strlen($encoded) == 0) {
+	if (GOTMLS_strlen($encoded) == 0) {
 		$encoding = "ISO-8859-1";
 		$encoded = htmlspecialchars($TXT, $flags, $encoding);
 	}
@@ -224,10 +228,10 @@ function GOTMLS_decode64($encoded_string) {
 }
 
 function GOTMLS_decode($encoded_string) {
-	if (strlen($encoded_string) > 1 && substr($encoded_string, -1) == "D")
+	if (GOTMLS_strlen($encoded_string) > 1 && substr($encoded_string, -1) == "D")
 		$encoded_string = str_rot13(substr($encoded_string, 0, -1));
 	$tail = 0;
-	if (strlen($encoded_string) > 1 && is_numeric(substr($encoded_string, -1)) && substr($encoded_string, -1) > 0)
+	if (GOTMLS_strlen($encoded_string) > 1 && is_numeric(substr($encoded_string, -1)) && substr($encoded_string, -1) > 0)
 		$tail = substr($encoded_string, -1) - 1;
 	else
 		$encoded_string .= "$tail";

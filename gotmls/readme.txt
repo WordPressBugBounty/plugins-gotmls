@@ -7,10 +7,10 @@ Donate link: https://gotmls.net/donate/
 Tags: anti-malware, security, scanner, brute-force, firewall
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.73
-Stable tag: 4.23.73
+Version: 4.23.77
+Stable tag: 4.23.77
 Requires at least: 3.3
-Tested up to: 6.7.1
+Tested up to: 6.8
 
 This Anti-Malware scanner searches for Malware, Viruses, and other security threats and vulnerabilities on your server and it helps you fix them.
 
@@ -99,6 +99,13 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. The Quarantine showing threats that have been fix already.
 
 == Changelog ==
+
+= 4.23.77 =
+* Added on option to the Brute-Force Login Protection to not use PHP session_start to store the LOGIN_KEY. 
+* Updated JavaScript arrays for better efficiency when larger arrays are created.
+* Fixed notice about Passing null to strlen being Deprecated in PHP 8.X.
+* Fixed notice about function _load_textdomain_just_in_time being called incorrectly in WP 6.7 and above.
+* Checked code for compatibility with WordPress 6.8 and ClassicPress 2.4.1.
 
 = 4.23.73 =
 * Added cleanup for old _session files.
@@ -497,8 +504,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Upgrade Notice ==
 
+= 4.23.77 =
+Added on option to the Brute-Force Login Protection to not use PHP session_start to store the LOGIN_KEY, updated JavaScript arrays for better efficiency, fixed notice about Passing null to strlen being Deprecated in PHP 8.X and function _load_textdomain_just_in_time being called incorrectly in WP 6.7 and above, and checked code for compatibility with WordPress 6.8 and ClassicPress 2.4.1.
+
 = 4.23.73 =
-* Added cleanup for old _session files, fxed hidden files exception to the skip by extention option and updates to manual session files when PHP sessions are not saves, and checked code for compatibility with WordPress 6.7.1.
+Added cleanup for old _session files, fxed hidden files exception to the skip by extention option and updates to manual session files when PHP sessions are not saves, and checked code for compatibility with WordPress 6.7.1.
 
 = 4.23.71 =
 Set autoload to false on the large values in wp_option, added exception to never skip hidden files, and checked code for compatibility with WordPress 6.6.2.

@@ -2,7 +2,7 @@
 /**
  * GOTMLS wp-login protection
  * @package GOTMLS
- * @since 4.23.73
+ * @since 4.23.77
 */
 
 require_once(dirname(__FILE__)."/trace.php");

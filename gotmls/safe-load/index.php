@@ -2,12 +2,12 @@
 /**
  * GOTMLS Brute-Force protections
  * @package GOTMLS
- * @since 4.23.67
+ * @since 4.23.75
 */
 
 if (!(isset($GLOBALS["GOTMLS"]["detected_attacks"]) && $GLOBALS["GOTMLS"]["detected_attacks"])) {
-	$file = (isset($_SERVER["SCRIPT_FILENAME"]) ? $_SERVER["SCRIPT_FILENAME"] : __FILE__);
-	$GLOBALS["GOTMLS"]["detected_attacks"] = '&attack[]='.strtolower((isset($_SERVER["DOCUMENT_ROOT"]) && strlen($_SERVER["DOCUMENT_ROOT"]) < strlen($file)) ? substr($file, strlen($_SERVER["DOCUMENT_ROOT"])) : basename($file));
+	$file = (isset($_SERVER["SCRIPT_FILENAME"]) ? $_SERVER["SCRIPT_FILENAME"] : __FILE__)."";
+	$GLOBALS["GOTMLS"]["detected_attacks"] = '&attack[]='.strtolower((isset($_SERVER["DOCUMENT_ROOT"]) && strlen($_SERVER["DOCUMENT_ROOT"]."") < strlen($file)) ? substr($file, strlen($_SERVER["DOCUMENT_ROOT"]."")) : basename($file));
 }
 
 foreach (array("REMOTE_ADDR", "HTTP_HOST", "REQUEST_URI", "HTTP_REFERER", "HTTP_USER_AGENT") as $var)
@@ -20,6 +20,6 @@ if (is_file($file = str_replace(basename(dirname(__FILE__)), basename(__FILE__),
 	$ver = $match[1];
 else
 	$ver = "Unknown";
-
-header("location: https://safe-load.gotmls.net/report.php?ver=$ver".$GLOBALS["GOTMLS"]["detected_attacks"]);
+$ver = "https://safe-load.gotmls.net/report.php?ver=$ver";
+header("location: $ver".$GLOBALS["GOTMLS"]["detected_attacks"]);
 die();

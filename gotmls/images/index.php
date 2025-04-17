@@ -2,7 +2,7 @@
 /**
  * GOTMLS Plugin Global Variables and Functions
  * @package GOTMLS
- * @since 4.23.73
+ * @since 4.23.75
 */
 
 define("GOTMLS_plugin_path", dirname(dirname(__FILE__))."/");
@@ -14,21 +14,12 @@ function __($text, $domain = "gotmls") {
 
 require_once(GOTMLS_plugin_path."safe-load/trace.php");
 
-GOTMLS_define("GOTMLS_local_images_path", substr(__FILE__, 0, strlen(__FILE__) - strlen(basename(__FILE__))));
-GOTMLS_define("GOTMLS_Failed_to_list_LANGUAGE", __("Failed to list files in directory!",'gotmls'));
-GOTMLS_define("GOTMLS_Run_Quick_Scan_LANGUAGE", __("Quick Scan",'gotmls'));
-GOTMLS_define("GOTMLS_View_Quarantine_LANGUAGE", __("View Quarantine",'gotmls'));
-GOTMLS_define("GOTMLS_View_Scan_Log_LANGUAGE", __("View Scan History",'gotmls'));
-GOTMLS_define("GOTMLS_require_version_LANGUAGE", sprintf(__("This Plugin requires WordPress version %s or higher",'gotmls'), GOTMLS_require_version));
-GOTMLS_define("GOTMLS_Scan_Settings_LANGUAGE", __("Scan Settings",'gotmls'));
-GOTMLS_define("GOTMLS_Loading_LANGUAGE", __("Loading, Please Wait ...",'gotmls'));
-GOTMLS_define("GOTMLS_Automatically_Fix_LANGUAGE", __("Automatically Fix SELECTED Files Now",'gotmls'));
-GOTMLS_define("GOTMLS_position_msg", __("Default position",'gotmls'));
+GOTMLS_define("GOTMLS_local_images_path", substr(__FILE__, 0, GOTMLS_strlen(__FILE__) - GOTMLS_strlen(basename(__FILE__))));
 
 if (!defined("ABSPATH")) {
 	define("ABSPATH", dirname(dirname(__FILE__)).'/safe-load/');
 	$root_path = dirname(ABSPATH);
-	while (strlen($root_path) > 1 && !is_file($root_path."/wp-config.php"))
+	while (GOTMLS_strlen($root_path) > 1 && !is_file($root_path."/wp-config.php"))
 		$root_path = dirname($root_path);
 	if (is_file($root_path."/wp-config.php"))
 		include_once($root_path."/wp-config.php");
@@ -44,9 +35,8 @@ $GLOBALS["GOTMLS"] = array(
 		"pluginTitle" => "Anti-Malware", 
 		"default_encodings" => array('UTF-8', 'ISO-8859-1', 'windows-1252'), 
 		"skip_dirs" => array(".", ".."), "scanfiles" => array(), "nonce"=>array(),
-		"mt" => ((isset($_REQUEST["mt"])&&strlen($_REQUEST["mt"])==32)?$_REQUEST["mt"]:md5(microtime(true))), 
+		"mt" => ((isset($_REQUEST["mt"])&&GOTMLS_strlen($_REQUEST["mt"])==32)?$_REQUEST["mt"]:md5(microtime(true))), 
 		"threat_files" => array("htaccess"=>".htaccess","timthumb"=>"thumb.php"), 
-		"threat_levels" => array(__("Database Injections",'gotmls')=>"db_scan",__("htaccess Threats",'gotmls')=>"htaccess",__("TimThumb Exploits",'gotmls')=>"timthumb",__("Known Threats",'gotmls')=>"known",__("Core File Changes",'gotmls')=>"wp_core",__("Potential Threats",'gotmls')=>"potential"), 
 		"apache" => array(),
 		"skip_ext"=>array("png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "psd", "svg", "webp", "doc", "docx", "otf", "ttf", "fla", "flv", "mov", "mp3", "pdf", "css", "pot", "po", "mo", "so", "exe", "zip", "7z", "gz", "rar"),
 		"execution_time" => 60,
@@ -85,10 +75,10 @@ if (function_exists("plugins_url"))
 	GOTMLS_define("GOTMLS_images_path", plugins_url('/', __FILE__));
 elseif (function_exists("plugin_dir_url"))
 	GOTMLS_define("GOTMLS_images_path", plugin_dir_url(__FILE__));
-elseif (isset($_SERVER["DOCUMENT_ROOT"]) && ($_SERVER["DOCUMENT_ROOT"]) && strlen($_SERVER["DOCUMENT_ROOT"]) < __FILE__ && substr(__FILE__, 0, strlen($_SERVER["DOCUMENT_ROOT"])) == $_SERVER["DOCUMENT_ROOT"])
-	GOTMLS_define("GOTMLS_images_path", substr(dirname(__FILE__), strlen($_SERVER["DOCUMENT_ROOT"])).'/');
-elseif (isset($_SERVER["SCRIPT_FILENAME"]) && isset($_SERVER["DOCUMENT_ROOT"]) && ($_SERVER["DOCUMENT_ROOT"]) && strlen($_SERVER["DOCUMENT_ROOT"]) < strlen($_SERVER["SCRIPT_FILENAME"]) && substr($_SERVER["SCRIPT_FILENAME"], 0, strlen($_SERVER["DOCUMENT_ROOT"])) == $_SERVER["DOCUMENT_ROOT"])
-	GOTMLS_define("GOTMLS_images_path", substr(GOTMLS_safe_url(dirname($_SERVER["SCRIPT_FILENAME"])), strlen($_SERVER["DOCUMENT_ROOT"])).'/');
+elseif (isset($_SERVER["DOCUMENT_ROOT"]) && ($_SERVER["DOCUMENT_ROOT"]) && GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"]) < __FILE__ && substr(__FILE__, 0, GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"])) == $_SERVER["DOCUMENT_ROOT"])
+	GOTMLS_define("GOTMLS_images_path", substr(dirname(__FILE__), GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"])).'/');
+elseif (isset($_SERVER["SCRIPT_FILENAME"]) && isset($_SERVER["DOCUMENT_ROOT"]) && ($_SERVER["DOCUMENT_ROOT"]) && GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"]) < GOTMLS_strlen($_SERVER["SCRIPT_FILENAME"]) && substr($_SERVER["SCRIPT_FILENAME"], 0, GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"])) == $_SERVER["DOCUMENT_ROOT"])
+	GOTMLS_define("GOTMLS_images_path", substr(GOTMLS_safe_url(dirname($_SERVER["SCRIPT_FILENAME"])), GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"])).'/');
 else
 	GOTMLS_define("GOTMLS_images_path", "/wp-content/plugins/gotmls/images/");
 
@@ -121,8 +111,6 @@ $GLOBALS["GOTMLS"]["tmp"]["settings_array"] = get_option('GOTMLS_settings_array'
 $GLOBALS["GOTMLS"]["tmp"]["definitions_array"] = GOTMLS_get_option('definitions', $GLOBALS["GOTMLS"]["tmp"]["definitions_array"]);
 GOTMLS_define("GOTMLS_siteurl", rtrim(get_option("siteurl", $GLOBALS["GOTMLS"]["tmp"]["protocol"].$SERVER_parts[1].((count($SERVER_parts) > 2 && ($SERVER_parts[2] == '80' || $SERVER_parts[2] == '443'))?"":":".$SERVER_parts[2])."/"), '\\/'));
 GOTMLS_load_scanlog($GLOBALS["GOTMLS"]["tmp"]["mt"]);
-if (!isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]))
-	$GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"] = $GLOBALS["GOTMLS"]["tmp"]["threat_levels"];
 if (!(isset($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]) && is_array($GLOBALS["GOTMLS"]["scan"]["log"]["settings"])))
 	$GLOBALS["GOTMLS"]["scan"]["log"]["settings"] = $GLOBALS["GOTMLS"]["tmp"]["settings_array"];
 GOTMLS_define("GOTMLS_installation_key", md5(GOTMLS_siteurl));
@@ -130,14 +118,14 @@ GOTMLS_define("GOTMLS_update_home", "//updates.gotmls.net/".GOTMLS_installation_
 
 function GOTMLS_get_corefile_URL($path, $hash) {
 	if (strpos($URL = GOTMLS_get_version("URL"), '&cp='))
-	//$hash != md5($contents)."O".strlen($contents)
+	//$hash != md5($contents)."O".GOTMLS_strlen($contents)
 		return 'http:'.GOTMLS_update_home.'cp_core.php?'.$URL.'&f='.GOTMLS_encode($path)."&h=$hash&ts=".gmdate("YmdHis").'&d='.rawurlencode(GOTMLS_siteurl);
 	else
 		return "http://core.svn.wordpress.org/tags/".GOTMLS_wp_version."$path";
 }
 
 function GOTMLS_Invalid_Nonce($pre = "//Error: ") {
-	return sprintf(__("%s Invalid or expired Nonce Token! %s Refresh and try again?",'gotmls'), $pre, (isset($_REQUEST["GOTMLS_mt"])?(" (".GOTMLS_htmlspecialchars($_REQUEST["GOTMLS_mt"]).((strlen($_REQUEST["GOTMLS_mt"]) == 32)?(isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["hour"])&&isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["user"])?(substr($pre, 0, 7)=="//DEBUG"?GOTMLS_htmlspecialchars(", U:".$GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["user"].", H:".$GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["hour"]."!) "):" !UH!) "):" !found!) "):" !len[".strlen($_REQUEST["GOTMLS_mt"])."]!) ")):" (GOTMLS_mt !set!) "));
+	return sprintf(__("%s Invalid or expired Nonce Token! %s Refresh and try again?",'gotmls'), $pre, (isset($_REQUEST["GOTMLS_mt"])?(" (".GOTMLS_htmlspecialchars($_REQUEST["GOTMLS_mt"]).((GOTMLS_strlen($_REQUEST["GOTMLS_mt"]) == 32)?(isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["hour"])&&isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["user"])?(substr($pre, 0, 7)=="//DEBUG"?GOTMLS_htmlspecialchars(", U:".$GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["user"].", H:".$GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["hour"]."!) "):" !UH!) "):" !found!) "):" !len[".GOTMLS_strlen($_REQUEST["GOTMLS_mt"])."]!) ")):" (GOTMLS_mt !set!) "));
 }
 
 function GOTMLS_set_nonce($context = "NULL", $uid = 0) {
@@ -166,12 +154,12 @@ function GOTMLS_get_nonce($context = "", $uid = 0) {
 	if (isset($_REQUEST["GOTMLS_mt"])) {
 		if (!$uid)
 			$uid = GOTMLS_get_current_user_id(GOTMLS_REMOTEADDR);
-		if (isset($_POST["GOTMLS_mt"]) && (strlen($_POST["GOTMLS_mt"]) == 32) && isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_POST["GOTMLS_mt"]]))
+		if (isset($_POST["GOTMLS_mt"]) && (GOTMLS_strlen($_POST["GOTMLS_mt"]) == 32) && isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_POST["GOTMLS_mt"]]))
 			$token = $GLOBALS["GOTMLS"]["tmp"]["nonce"][$_POST["GOTMLS_mt"]];
-		elseif (isset($_GET["GOTMLS_mt"]) && (strlen($_GET["GOTMLS_mt"]) == 32) && isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_GET["GOTMLS_mt"]]))
+		elseif (isset($_GET["GOTMLS_mt"]) && (GOTMLS_strlen($_GET["GOTMLS_mt"]) == 32) && isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_GET["GOTMLS_mt"]]))
 			$token = $GLOBALS["GOTMLS"]["tmp"]["nonce"][$_GET["GOTMLS_mt"]];
 		if (isset($token) && is_array($token) && isset($token["hour"]) && isset($token["user"]) && isset($token["context"])) {
-			if (strlen($context) && ($context != $token["context"]))
+			if (GOTMLS_strlen($context) && ($context != $token["context"]))
 				$return = null;
 			elseif ($uid == $token["user"] || (is_numeric($uid) && !is_numeric(GOTMLS_REMOTEADDR) && (GOTMLS_REMOTEADDR == $token["user"])))
 				$return = (INT) $token["hour"];
@@ -213,7 +201,7 @@ function GOTMLS_fileperms($file) {
 }
 
 function GOTMLS_file_details($file) {
-	return '<div id="file_details_'.md5($file).'" class="shadowed-box rounded-corners" style="display: none; position: absolute; left: 8px; top: 29px; background-color: #ccc; border: medium solid #C00; box-shadow: -3px 3px 3px #666; border-radius: 10px; padding: 10px;"><b>File Details: '.GOTMLS_htmlspecialchars(basename($file)).'</b><br />in: '.dirname(realpath($file)).'<br />size: '.filesize(realpath($file)).' ( '.ceil(strlen(GOTMLS_htmlspecialchars($GLOBALS["GOTMLS"]["tmp"]["file_contents"]))/1024).' KB )<br />encoding: '.(isset($GLOBALS["GOTMLS"]["tmp"]["encoding"])?$GLOBALS["GOTMLS"]["tmp"]["encoding"]:(function_exists("mb_detect_encoding")?mb_detect_encoding($GLOBALS["GOTMLS"]["tmp"]["file_contents"]):"Unknown")).'<br />permissions: '.GOTMLS_fileperms(realpath($file)).'<br />Owner/Group: '.fileowner(realpath($file)).'/'.filegroup(realpath($file)).(function_exists("getmyuid")&&function_exists("getmygid")?' (you are: '.getmyuid().'/'.getmygid():'(getmyuid does not exist').')<br />modified:'.gmdate(" Y-m-d H:i:s ", filemtime(realpath($file))).'<br />changed:'.gmdate(" Y-m-d H:i:s ", filectime(realpath($file))).'</div>';
+	return '<div id="file_details_'.md5($file).'" class="shadowed-box rounded-corners" style="display: none; position: absolute; left: 8px; top: 29px; background-color: #ccc; border: medium solid #C00; box-shadow: -3px 3px 3px #666; border-radius: 10px; padding: 10px;"><b>File Details: '.GOTMLS_htmlspecialchars(basename($file)).'</b><br />in: '.dirname(realpath($file)).'<br />size: '.filesize(realpath($file)).' ( '.ceil(GOTMLS_strlen(GOTMLS_htmlspecialchars($GLOBALS["GOTMLS"]["tmp"]["file_contents"]))/1024).' KB )<br />encoding: '.(isset($GLOBALS["GOTMLS"]["tmp"]["encoding"])?$GLOBALS["GOTMLS"]["tmp"]["encoding"]:(function_exists("mb_detect_encoding")?mb_detect_encoding($GLOBALS["GOTMLS"]["tmp"]["file_contents"]):"Unknown")).'<br />permissions: '.GOTMLS_fileperms(realpath($file)).'<br />Owner/Group: '.fileowner(realpath($file)).'/'.filegroup(realpath($file)).(function_exists("getmyuid")&&function_exists("getmygid")?' (you are: '.getmyuid().'/'.getmygid():'(getmyuid does not exist').')<br />modified:'.gmdate(" Y-m-d H:i:s ", filemtime(realpath($file))).'<br />changed:'.gmdate(" Y-m-d H:i:s ", filectime(realpath($file))).'</div>';
 }
 
 function GOTMLS_esc_url($url) {
@@ -255,7 +243,7 @@ function GOTMLS_get_styles($pre_style = "") {
 	$head_nonce = GOTMLS_set_nonce(__FUNCTION__."255");
 	$gt = ">"; // This local variable never changes
 	$lt = "<"; // This local variable never changes
-	if (!strlen(trim("$pre_style")))
+	if (!GOTMLS_strlen(trim("$pre_style")))
 		$pre_style = $lt."style$gt";
 	return $pre_style.'
 span.GOTMLS_date {float: right; width: 130px; white-space: nowrap;}
@@ -651,7 +639,7 @@ function GOTMLS_box($bTitle, $bContents, $bType = "postbox") {
 
 function GOTMLS_threats_ver($threats_name) {
 	foreach ($GLOBALS["GOTMLS"]["tmp"]["definitions_array"] as $threat_level => $Threats)
-		if (is_array($Threats) && isset($Threats["$threats_name"][0]) && strlen($Threats["$threats_name"][0]) == 5)
+		if (is_array($Threats) && isset($Threats["$threats_name"][0]) && GOTMLS_strlen($Threats["$threats_name"][0]) == 5)
 			return $Threats["$threats_name"][0];
 	return $threats_name;
 }
@@ -672,7 +660,7 @@ function GOTMLS_threats_found_meta($Q_post = array()) {
 		foreach ($my_query as $rec) {
 			if (isset($rec["Threat"]) && is_string($rec["Threat"]) && is_array($Threat = @GOTMLS_uckserialize($rec["Threat"])) && isset($Threat["DefVer"]) && isset($Threat["SubPos"])) {
 				$ends = explode("-", $Threat["SubPos"]."--", 3);
-				if (strlen($ends[0]) > 0 && strlen($ends[1]) > 0 && is_numeric($ends[1]) && is_numeric($ends[0])) {
+				if (GOTMLS_strlen($ends[0]) > 0 && GOTMLS_strlen($ends[1]) > 0 && is_numeric($ends[1]) && is_numeric($ends[0])) {
 					if ($ends[1] < $ends[0])
 						$ends = array_reverse($ends);
 					$fa .= $lt.'a title="'.GOTMLS_htmlspecialchars($Threat["DefVer"]).'" href="javascript:select_text_range(\'ta_file\', '.$ends[0].', '.$ends[1].');"'.$gt.'['.$f++."]$lt/a$gt ";
@@ -680,11 +668,11 @@ function GOTMLS_threats_found_meta($Q_post = array()) {
 			}
 		}
 	} else {
-		if (isset($Q_post["post_excerpt"]) && strlen($Q_post["post_excerpt"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["threats_found"] = @GOTMLS_uckserialize(GOTMLS_decode($Q_post["post_excerpt"])))) {
+		if (isset($Q_post["post_excerpt"]) && GOTMLS_strlen($Q_post["post_excerpt"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["threats_found"] = @GOTMLS_uckserialize(GOTMLS_decode($Q_post["post_excerpt"])))) {
 			$f = 1;
 			foreach ($GLOBALS["GOTMLS"]["tmp"]["threats_found"] as $threats_found => $threats_name) {
 				$ends = explode("-", "$threats_found--", 3);
-				if (strlen($ends[0]) > 0 && strlen($ends[1]) > 0 && is_numeric($ends[1]) && is_numeric($ends[0])) {
+				if (GOTMLS_strlen($ends[0]) > 0 && GOTMLS_strlen($ends[1]) > 0 && is_numeric($ends[1]) && is_numeric($ends[0])) {
 					if ($ends[1] < $ends[0])
 						$ends = array_reverse($ends);
 					$fa .= $lt.'a title="'.GOTMLS_htmlspecialchars($threats_name).'" href="javascript:select_text_range(\'ta_file\', '.$ends[0].', '.$ends[1].');"'.$gt.'['.$f++."]$lt/a$gt ";
@@ -699,7 +687,7 @@ function GOTMLS_threats_found_meta($Q_post = array()) {
 					$flen = 0;
 					$potential_threat = GOTMLS_convert_r($threats_found);
 					while (($fpos = strpos($GLOBALS["GOTMLS"]["tmp"]["file_contents"], ($potential_threat), $flen + $fpos)) !== false) {
-						$flen = strlen($potential_threat);
+						$flen = GOTMLS_strlen($potential_threat);
 						$fa .= $lt.'a title="'.GOTMLS_htmlspecialchars($threats_name).'" href="javascript:select_text_range(\'ta_file\', '.($fpos).', '.($fpos + $flen).');"'.$gt.'['.$f++."]$lt/a$gt ";
 						if (function_exists("add_post_meta"))
 							add_post_meta($pID, 'GOTMLS_threats_found', serialize(array("SubPos" => $fpos."-".($fpos + $flen), "DefVer" => GOTMLS_threats_ver($threats_name))));
@@ -707,7 +695,7 @@ function GOTMLS_threats_found_meta($Q_post = array()) {
 				}
 			}
 		} else
-			$fa = strlen($Q_post["post_excerpt"])."No Threats Found ";
+			$fa = GOTMLS_strlen($Q_post["post_excerpt"])."No Threats Found ";
 	}
 	return $fa;
 }
@@ -736,7 +724,7 @@ function GOTMLS_view_details($Q_post, $pretext = "") {
 								"div" => array(
 									"b" => "$title", 
 									"br id='encoding' /" => "encoding: $en",
-									"br id='size' /" => "size: ".strlen("$encoded_file_contents")." Bytes",
+									"br id='size' /" => "size: ".GOTMLS_strlen("$encoded_file_contents")." Bytes",
 									"br id='modified' /" => 'modified:'.$Q_post["post_modified"],
 									"br id='changed' /" => 'changed:'.$Q_post["post_modified_gmt"],
 									"br id='quarantined' /" => 'quarantined:'.$Q_post["post_date"]
@@ -801,8 +789,8 @@ if (typeof window.parent.showhide === "function")
 '.$posttext;
 }
 
-if ((isset($_SERVER["DOCUMENT_ROOT"]) && ($SCRIPT_FILE = str_replace($_SERVER["DOCUMENT_ROOT"], "", (isset($_SERVER["SCRIPT_FILENAME"])?$_SERVER["SCRIPT_FILENAME"]:(isset($_SERVER["SCRIPT_NAME"])?$_SERVER["SCRIPT_NAME"]:"")))) && strlen($SCRIPT_FILE) > strlen("/".basename(__FILE__)) && substr(__FILE__, -1 * strlen($SCRIPT_FILE)) == substr($SCRIPT_FILE, -1 * strlen(__FILE__)))) {
-	if (isset($_REQUEST["page"]) && str_replace('-', '_', $_REQUEST["page"]) == "GOTMLS_View_Quarantine" && isset($_REQUEST["GOTMLS_mt"]) && strlen($GOTMLS_nonce = $_REQUEST["GOTMLS_mt"]) == 32 && isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["context"]) && ($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["context"] == GOTMLS_update_home)) {
+if ((isset($_SERVER["DOCUMENT_ROOT"]) && ($SCRIPT_FILE = str_replace($_SERVER["DOCUMENT_ROOT"], "", (isset($_SERVER["SCRIPT_FILENAME"])?$_SERVER["SCRIPT_FILENAME"]:(isset($_SERVER["SCRIPT_NAME"])?$_SERVER["SCRIPT_NAME"]:"")))) && GOTMLS_strlen($SCRIPT_FILE) > GOTMLS_strlen("/".basename(__FILE__)) && substr(__FILE__, -1 * GOTMLS_strlen($SCRIPT_FILE)) == substr($SCRIPT_FILE, -1 * GOTMLS_strlen(__FILE__)))) {
+	if (isset($_REQUEST["page"]) && str_replace('-', '_', $_REQUEST["page"]) == "GOTMLS_View_Quarantine" && isset($_REQUEST["GOTMLS_mt"]) && GOTMLS_strlen($GOTMLS_nonce = $_REQUEST["GOTMLS_mt"]) == 32 && isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["context"]) && ($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["context"] == GOTMLS_update_home)) {
 		try {
 			$wpdb->prefix = $table_prefix;
 			if (isset($_REQUEST["id"]) && is_numeric($_REQUEST["id"])) {
@@ -965,7 +953,7 @@ function GOTMLS_array_replace_recursive($array1 = array()) {
 
 function GOTMLS_scanlog_title() {
 	$units = array("seconds"=>60,"minutes"=>60,"hours"=>24,"days"=>365,"years"=>10);
-	if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["type"]) && strlen($GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["type"]))
+	if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["type"]) && GOTMLS_strlen($GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["type"]))
 		$GLOBALS["GOTMLS"]["scan"]["title"] = GOTMLS_sanitize($GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["type"]);
 	else
 		$GLOBALS["GOTMLS"]["scan"]["title"] = "Unknown scan type";
@@ -1001,13 +989,13 @@ function GOTMLS_scanlog_title() {
 
 function GOTMLS_load_scanlog($scanlog_key) {
 	global $wpdb;
-	if (strlen($scanlog_key = preg_replace('/[^0-9a-f]++]i/', "", $scanlog_key)) != 32)
+	if (GOTMLS_strlen($scanlog_key = preg_replace('/[^0-9a-f]++]i/', "", $scanlog_key)) != 32)
 		$scanlog_key = preg_replace('/[^0-9a-f]++]i/', "", $GLOBALS["GOTMLS"]["tmp"]["mt"]);
-	if ((strlen($scanlog_key) == 32) && ($prs = $wpdb->get_results($wpdb->prepare("SELECT * FROM `{$wpdb->prefix}posts` WHERE post_type = %s AND post_name = %s", 'gotmls_results', $scanlog_key), ARRAY_A))) {
+	if ((GOTMLS_strlen($scanlog_key) == 32) && ($prs = $wpdb->get_results($wpdb->prepare("SELECT * FROM `{$wpdb->prefix}posts` WHERE post_type = %s AND post_name = %s", 'gotmls_results', $scanlog_key), ARRAY_A))) {
 		$GLOBALS["GOTMLS"]["scan"]["key"] = $scanlog_key;
-		if (!(isset($prs[0]["post_content"]) && (strlen($prs[0]["post_content"])) && is_array($GLOBALS["GOTMLS"]["scan"]["log"] = json_decode($prs[0]["post_content"], true))))
+		if (!(isset($prs[0]["post_content"]) && (GOTMLS_strlen($prs[0]["post_content"])) && is_array($GLOBALS["GOTMLS"]["scan"]["log"] = json_decode($prs[0]["post_content"], true))))
 			$GLOBALS["GOTMLS"]["scan"]["log"] = array();
-		if (!isset($GLOBALS["GOTMLS"]["scan"]["title"]) && !(isset($prs[0]["post_title"]) && (strlen($GLOBALS["GOTMLS"]["scan"]["title"] = $prs[0]["post_title"])))) {
+		if (!isset($GLOBALS["GOTMLS"]["scan"]["title"]) && !(isset($prs[0]["post_title"]) && (GOTMLS_strlen($GLOBALS["GOTMLS"]["scan"]["title"] = $prs[0]["post_title"])))) {
 			GOTMLS_scanlog_title();
 		}
 		return $scanlog_key;
@@ -1018,7 +1006,7 @@ function GOTMLS_load_scanlog($scanlog_key) {
 function GOTMLS_update_scanlog($scan_log, $status = "") {
 	global $wpdb;
 	if (is_array($scan_log)) {
-		if (isset($GLOBALS["GOTMLS"]["scan"]["key"]) && strlen($scanlog_key = preg_replace('/[^0-9a-f]++]i/', "", $GLOBALS["GOTMLS"]["scan"]["key"])) == 32) {
+		if (isset($GLOBALS["GOTMLS"]["scan"]["key"]) && GOTMLS_strlen($scanlog_key = preg_replace('/[^0-9a-f]++]i/', "", $GLOBALS["GOTMLS"]["scan"]["key"])) == 32) {
 			$GLOBALS["GOTMLS"]["scan"]["log"] = GOTMLS_array_replace_recursive($GLOBALS["GOTMLS"]["scan"]["log"], $scan_log);
 			$values = array("post_modified" => date("Y-m-d H:i:s", (int) $GLOBALS["GOTMLS"]["MT"]));
 			$where = array("post_type" => 'gotmls_results', "post_name" => $scanlog_key);
@@ -1049,7 +1037,7 @@ function GOTMLS_update_scanlog($scan_log, $status = "") {
 			if ($where)
 				$scan_log["updated" . $wpdb->update($wpdb->posts, $values, $where)] = $where;
 			else {
-				if (strlen($GLOBALS["GOTMLS"]["scan"]["key"] = preg_replace('/[^0-9a-f]++]i/', "", $GLOBALS["GOTMLS"]["tmp"]["mt"])) != 32)
+				if (GOTMLS_strlen($GLOBALS["GOTMLS"]["scan"]["key"] = preg_replace('/[^0-9a-f]++]i/', "", $GLOBALS["GOTMLS"]["tmp"]["mt"])) != 32)
 					$GLOBALS["GOTMLS"]["scan"]["key"] = md5($GLOBALS["GOTMLS"]["MT"]);
 				$values["post_name"] = $GLOBALS["GOTMLS"]["scan"]["key"];
 				$scan_log["inserted"] = $wpdb->insert($wpdb->posts, $values);
@@ -1093,7 +1081,7 @@ function GOTMLS_preg_match_all($threat_definition, $threat_name, $not_serialized
 			$new_contents = false;
 		foreach ($threats_found[0] as $find) {
 			$potential_threat = GOTMLS_convert_r($find);
-			$flen = strlen($potential_threat);
+			$flen = GOTMLS_strlen($potential_threat);
 			while (($start = strpos(GOTMLS_convert_r($GLOBALS["GOTMLS"]["tmp"]["file_contents"]), $potential_threat, $start+1)) !== false) {
 				$GLOBALS["GOTMLS"]["tmp"]["threats_found"]["$start-".($flen+$start)] = "$threat_name";
 				if ($not_serialized)
@@ -1102,7 +1090,7 @@ function GOTMLS_preg_match_all($threat_definition, $threat_name, $not_serialized
 					$GLOBALS["GOTMLS"]["tmp"]["new_contents"] = substr($GLOBALS["GOTMLS"]["tmp"]["new_contents"], 0, $start).str_repeat(" ", $flen).substr($GLOBALS["GOTMLS"]["tmp"]["new_contents"], $start + $flen);
 			}
 		}
-		if ($not_serialized && ($new_contents !== false) && strlen($new_contents) < strlen($GLOBALS["GOTMLS"]["tmp"]["new_contents"]))
+		if ($not_serialized && ($new_contents !== false) && GOTMLS_strlen($new_contents) < GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["new_contents"]))
 			$GLOBALS["GOTMLS"]["tmp"]["new_contents"] = $new_contents;
 		return count($GLOBALS["GOTMLS"]["tmp"]["threats_found"]);
 	} else 
@@ -1120,27 +1108,27 @@ function GOTMLS_preg_last_pcre_error() {
 function GOTMLS_check_threat($check_threats, $file='UNKNOWN') {
 	$GLOBALS["GOTMLS"]["tmp"]["threats_found"] = array();
 	$GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["last_threat"] = microtime(true);
-	$filekey = md5($GLOBALS["GOTMLS"]["tmp"]["file_contents"])."O".strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]);
+	$filekey = md5($GLOBALS["GOTMLS"]["tmp"]["file_contents"])."O".GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]);
 	if (is_array($check_threats)) {
-		$path = str_replace("//", "/", "/".str_replace("\\", "/", substr($file, strlen(ABSPATH))));
-		if (substr($file, 0, strlen(ABSPATH)) == ABSPATH && isset($check_threats[GOTMLS_wp_version]["$path"])) {
-			if (($check_threats[GOTMLS_wp_version]["$path"] != $filekey) && ($source = GOTMLS_get_URL(GOTMLS_get_corefile_URL("$path", $check_threats[GOTMLS_wp_version]["$path"]))) && ($check_threats[GOTMLS_wp_version]["$path"] == md5($source)."O".strlen($source))) {
+		$path = str_replace("//", "/", "/".str_replace("\\", "/", substr($file, GOTMLS_strlen(ABSPATH))));
+		if (substr($file, 0, GOTMLS_strlen(ABSPATH)) == ABSPATH && isset($check_threats[GOTMLS_wp_version]["$path"])) {
+			if (($check_threats[GOTMLS_wp_version]["$path"] != $filekey) && ($source = GOTMLS_get_URL(GOTMLS_get_corefile_URL("$path", $check_threats[GOTMLS_wp_version]["$path"]))) && ($check_threats[GOTMLS_wp_version]["$path"] == md5($source)."O".GOTMLS_strlen($source))) {
 				$GLOBALS["GOTMLS"]["tmp"]["new_contents"] = $source;
-				$len = strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]);
-				if (strlen($source) < $len)
-					$len = strlen($source);
+				$len = GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]);
+				if (GOTMLS_strlen($source) < $len)
+					$len = GOTMLS_strlen($source);
 				for ($start = 0, $end = 0; ($start == 0 || $end == 0) && $len > 0; $len--){
 					if ($start == 0 && substr($source, 0, $len) == substr($GLOBALS["GOTMLS"]["tmp"]["file_contents"], 0, $len))
 						$start = $len;
 					if ($end == 0 && substr($source, -1 * $len) == substr($GLOBALS["GOTMLS"]["tmp"]["file_contents"], -1 * $len))
 						$end = $len;
 				}
-				$GLOBALS["GOTMLS"]["tmp"]["threats_found"]["$start-".(strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"])-$end)] = "Core File Modified";
+				$GLOBALS["GOTMLS"]["tmp"]["threats_found"]["$start-".(GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"])-$end)] = "Core File Modified";
 			}
 		} else {
 			foreach ($check_threats as $threat_name=>$threat_definitions) {
 				$GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["last_threat"] = microtime(true);
-				if (is_array($threat_definitions) && count($threat_definitions) > 1 && strlen($def_ver = array_shift($threat_definitions)) == 5 && (!(isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["dont_check"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["dont_check"]) && in_array($threat_name, $GLOBALS["GOTMLS"]["tmp"]["settings_array"]["dont_check"])))) {
+				if (is_array($threat_definitions) && count($threat_definitions) > 1 && GOTMLS_strlen($def_ver = array_shift($threat_definitions)) == 5 && (!(isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["dont_check"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["dont_check"]) && in_array($threat_name, $GLOBALS["GOTMLS"]["tmp"]["settings_array"]["dont_check"])))) {
 					while ($threat_definition = array_shift($threat_definitions)) {
 						$found = GOTMLS_preg_match_all($threat_definition, $threat_name);
 						if ($found===false && ($err = GOTMLS_preg_last_pcre_error()))
@@ -1169,7 +1157,7 @@ function GOTMLS_check_threat($check_threats, $file='UNKNOWN') {
 				}
 			}
 		}
-	} elseif (strlen($check_threats) && isset($_GET['eli']) && GOTMLS_verify_regex($check_threats)) {
+	} elseif (GOTMLS_strlen($check_threats) && isset($_GET['eli']) && GOTMLS_verify_regex($check_threats)) {
 		$found = GOTMLS_preg_match_all($check_threats, $check_threats);
 		if ($found===false && ($err = GOTMLS_preg_last_pcre_error()))
 			$GLOBALS["GOTMLS"]["tmp"]["errors"]["$check_threats"]["$filekey"] = $err;
@@ -1237,10 +1225,10 @@ function GOTMLS_scanfile($file) {
 		if (GOTMLS_is_whitelisted($MD5O.$filesize))
 			return GOTMLS_return_threat($className, "checked.gif?$className", $file, $threat_link);
 		$GLOBALS["GOTMLS"]["tmp"]["new_contents"] = $GLOBALS["GOTMLS"]["tmp"]["file_contents"];
-		if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check_custom"]) && strlen($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check_custom"]) && isset($_GET['eli']) && GOTMLS_verify_regex($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check_custom"]) && ($found = GOTMLS_check_threat($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check_custom"])))
+		if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check_custom"]) && GOTMLS_strlen($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check_custom"]) && isset($_GET['eli']) && GOTMLS_verify_regex($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check_custom"]) && ($found = GOTMLS_check_threat($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check_custom"])))
 			$className = "known";
 		else {
-			$path = str_replace("//", "/", "/".str_replace("\\", "/", substr($file, strlen(ABSPATH))));
+			$path = str_replace("//", "/", "/".str_replace("\\", "/", substr($file, GOTMLS_strlen(ABSPATH))));
 			if (isset($_SESSION["GOTMLS_debug"])) {
 				$_SESSION["GOTMLS_debug"]["file"] = $file;
 				$_SESSION["GOTMLS_debug"]["last"]["total"] = microtime(true);
@@ -1252,7 +1240,7 @@ function GOTMLS_scanfile($file) {
 							$_SESSION["GOTMLS_debug"]["threat_level"] = $threat_level;
 							$_SESSION["GOTMLS_debug"]["last"]["threat_level"] = microtime(true);
 						}
-						if (in_array($threat_level, $GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"]) && !$found && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"][$threat_level]) && ($threat_level != "wp_core" || (substr($file, 0, strlen(ABSPATH)) == ABSPATH && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["wp_core"][GOTMLS_wp_version]["$path"]))) && (!isset($GLOBALS["GOTMLS"]["tmp"]["threat_files"]["$threat_level"]) || (substr($file."e", (-1 * strlen($GLOBALS["GOTMLS"]["tmp"]["threat_files"][$threat_level]."e"))) == $GLOBALS["GOTMLS"]["tmp"]["threat_files"][$threat_level]."e")) && ($found = GOTMLS_check_threat($GLOBALS["GOTMLS"]["tmp"]["definitions_array"][$threat_level],$file)))
+						if (in_array($threat_level, $GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"]) && !$found && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"][$threat_level]) && ($threat_level != "wp_core" || (substr($file, 0, GOTMLS_strlen(ABSPATH)) == ABSPATH && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["wp_core"][GOTMLS_wp_version]["$path"]))) && (!isset($GLOBALS["GOTMLS"]["tmp"]["threat_files"]["$threat_level"]) || (substr($file."e", (-1 * GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["threat_files"][$threat_level]."e"))) == $GLOBALS["GOTMLS"]["tmp"]["threat_files"][$threat_level]."e")) && ($found = GOTMLS_check_threat($GLOBALS["GOTMLS"]["tmp"]["definitions_array"][$threat_level],$file)))
 							$className = $threat_level;
 					}
 				}
@@ -1288,13 +1276,13 @@ $GLOBALS["GOTMLS"]["tmp"]["debug_fix"]="errors";
 $GLOBALS["GOTMLS"]["tmp"]["debug_fix"]="GOTMLS_fix";
 				if (GOTMLS_get_nonce()) {
 					if ($className == "timthumb") {
-						if (($source = GOTMLS_get_URL("https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/timthumb/timthumb.php")) && strlen($source) > 500)
+						if (($source = GOTMLS_get_URL("https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/timthumb/timthumb.php")) && GOTMLS_strlen($source) > 500)
 							$GLOBALS["GOTMLS"]["tmp"]["new_contents"] = $source;
 						else
 							$GLOBALS["GOTMLS"]["tmp"]["file_contents"] = "";
 					} elseif ($className == 'wp_core') {
-						$path = str_replace("//", "/", "/".str_replace("\\", "/", substr($file, strlen(ABSPATH))));
-						if (substr($file, 0, strlen(ABSPATH)) == ABSPATH && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["wp_core"][GOTMLS_wp_version]["$path"]) && ($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["wp_core"][GOTMLS_wp_version]["$path"] != $MD5O.strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"])) && ($source = GOTMLS_get_URL(GOTMLS_get_corefile_URL("$path", $GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["wp_core"][GOTMLS_wp_version]["$path"]))) && ($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["wp_core"][GOTMLS_wp_version]["$path"] == md5($source)."O".strlen($source)))
+						$path = str_replace("//", "/", "/".str_replace("\\", "/", substr($file, GOTMLS_strlen(ABSPATH))));
+						if (substr($file, 0, GOTMLS_strlen(ABSPATH)) == ABSPATH && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["wp_core"][GOTMLS_wp_version]["$path"]) && ($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["wp_core"][GOTMLS_wp_version]["$path"] != $MD5O.GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"])) && ($source = GOTMLS_get_URL(GOTMLS_get_corefile_URL("$path", $GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["wp_core"][GOTMLS_wp_version]["$path"]))) && ($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["wp_core"][GOTMLS_wp_version]["$path"] == md5($source)."O".GOTMLS_strlen($source)))
 							$GLOBALS["GOTMLS"]["tmp"]["new_contents"] = $source;
 						else
 							$GLOBALS["GOTMLS"]["tmp"]["file_contents"] = "";
@@ -1302,16 +1290,16 @@ $GLOBALS["GOTMLS"]["tmp"]["debug_fix"]="GOTMLS_fix";
 						$GOTMLS_no_contents = trim(preg_replace('/\/\*.*?\*\/\s*/s', "", $GLOBALS["GOTMLS"]["tmp"]["new_contents"]));
 						$GOTMLS_no_contents = trim(preg_replace('/\n\s*\/\/.*/', "", $GOTMLS_no_contents));
 						$GOTMLS_no_contents = trim(preg_replace('/'.$lt.'\?(php)?\s*(\?'.$gt.'|$)/is', "", $GOTMLS_no_contents));
-						if (strlen($GOTMLS_no_contents))
+						if (GOTMLS_strlen($GOTMLS_no_contents))
 							$GLOBALS["GOTMLS"]["tmp"]["new_contents"] = trim(preg_replace('/'.$lt.'\?(php)?\s*(\?'.$gt.'|$)/is', "", $GLOBALS["GOTMLS"]["tmp"]["new_contents"]));
 						else
 							$GLOBALS["GOTMLS"]["tmp"]["new_contents"] = "";
 					}
-					if (strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]) > 0 && (($Q_post = GOTMLS_write_quarantine($file, $className)) !== false) && ((strlen($GLOBALS["GOTMLS"]["tmp"]["new_contents"])==0 && isset($_GET["eli"]) && ($_GET["eli"] == "delete") && @unlink($file)) || (($Write_File = GOTMLS_save_contents($file, $GLOBALS["GOTMLS"]["tmp"]["new_contents"])) !== false))) {
+					if (GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]) > 0 && (($Q_post = GOTMLS_write_quarantine($file, $className)) !== false) && ((GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["new_contents"])==0 && isset($_GET["eli"]) && ($_GET["eli"] == "delete") && @unlink($file)) || (($Write_File = GOTMLS_save_contents($file, $GLOBALS["GOTMLS"]["tmp"]["new_contents"])) !== false))) {
 						echo __("Success!",'gotmls');
 						return "/*--{$gt}*"."/\nfixedFile('$clean_file');\n/*{$lt}!--*"."/";
 					} else {
-						echo __("Failed:",'gotmls').' '.(strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"])?((is_writable(dirname($file)) && is_writable($file))?(($Q_post===false)?__("failed to quarantine!",'gotmls')." (".GOTMLS_htmlspecialchars($wpdb->last_error).")":((isset($Write_File)&&$Write_File)?"Q=$Q_post: ".__("reason unknown!",'gotmls'):"Q=$Q_post: ".__("failed to write!",'gotmls'))):__("file not writable!",'gotmls')):__("no file contents!",'gotmls'));
+						echo __("Failed:",'gotmls').' '.(GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"])?((is_writable(dirname($file)) && is_writable($file))?(($Q_post===false)?__("failed to quarantine!",'gotmls')." (".GOTMLS_htmlspecialchars($wpdb->last_error).")":((isset($Write_File)&&$Write_File)?"Q=$Q_post: ".__("reason unknown!",'gotmls'):"Q=$Q_post: ".__("failed to write!",'gotmls'))):__("file not writable!",'gotmls')):__("no file contents!",'gotmls'));
 						if (isset($_GET["eli"]))
 							echo get_current_user().$lt."br$gt{$lt}pre$gt file_stat".print_r(stat($file), true);
 						return "/*--{$gt}*"."/\nfailedFile('$clean_file');\n/*{$lt}!--*"."/";
@@ -1366,7 +1354,7 @@ function GOTMLS_db_scan($id = 0) {
 					foreach ($GLOBALS["GOTMLS"]["tmp"]["threats_found"] as $threats_found => $threats_name) {
 						list($start, $end, $junk) = explode("-", "$threats_found--", 3);
 						if ($start > $end)
-							$fa .= 'ERROR['.($f++).']: Threat_size{'.$threats_found.'} Content_size{'.strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]).'}';
+							$fa .= 'ERROR['.($f++).']: Threat_size{'.$threats_found.'} Content_size{'.GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]).'}';
 						else
 							$fa .= ' <a title="'.GOTMLS_htmlspecialchars($threats_name).'" href="javascript:select_text_range(\'ta_file\', '.$start.', '.$end.');">['.$f++.']</a>';
 					}
@@ -1397,7 +1385,7 @@ function GOTMLS_db_scan($id = 0) {
 					}
 					return $li_js;
 				} else {
-					return '<form style="margin: 0;" method="post" action="'.admin_url('admin-ajax.php?'.GOTMLS_set_nonce(__FUNCTION__."1394")).'" onsubmit="return confirm(\''.__("Are you sure you want to delete this option?",'gotmls').'\');"><input type="hidden" name="GOTMLS_fixing" value="2"><input type="hidden" name="action" value="GOTMLS_fix"><input type="submit" value="Delete this Option" style="float: right;"><input type="hidden" name="GOTMLS_fix[]" value="'.$encoded_id.'"></form><div id="fileperms" class="shadowed-box rounded-corners" style="display: none; position: absolute; left: 8px; top: 29px; background-color: #ccc; border: medium solid #C00; box-shadow: -3px 3px 3px #666; border-radius: 10px; padding: 10px;"><b>Record Details</b><br />encoding: '.(isset($GLOBALS["GOTMLS"]["tmp"]["encoding"])?$GLOBALS["GOTMLS"]["tmp"]["encoding"]:"Unknown").'<br />size: '.strlen(GOTMLS_convert_r($GLOBALS["GOTMLS"]["tmp"]["file_contents"])).' bytes</div><div style="overflow: auto;"><span onmouseover="document.getElementById(\'fileperms\').style.display=\'block\';" onmouseout="document.getElementById(\'fileperms\').style.display=\'none\';">'.__("Record Details:",'gotmls').'</span> ('.$fa.' )</div></td></tr><tr><td style="height: 100%"><textarea id="ta_file" style="width: 100%; height: 100%">'.GOTMLS_htmlentities(GOTMLS_convert_r($GLOBALS["GOTMLS"]["tmp"]["file_contents"])).'</textarea></td></tr></table>';
+					return '<form style="margin: 0;" method="post" action="'.admin_url('admin-ajax.php?'.GOTMLS_set_nonce(__FUNCTION__."1394")).'" onsubmit="return confirm(\''.__("Are you sure you want to delete this option?",'gotmls').'\');"><input type="hidden" name="GOTMLS_fixing" value="2"><input type="hidden" name="action" value="GOTMLS_fix"><input type="submit" value="Delete this Option" style="float: right;"><input type="hidden" name="GOTMLS_fix[]" value="'.$encoded_id.'"></form><div id="fileperms" class="shadowed-box rounded-corners" style="display: none; position: absolute; left: 8px; top: 29px; background-color: #ccc; border: medium solid #C00; box-shadow: -3px 3px 3px #666; border-radius: 10px; padding: 10px;"><b>Record Details</b><br />encoding: '.(isset($GLOBALS["GOTMLS"]["tmp"]["encoding"])?$GLOBALS["GOTMLS"]["tmp"]["encoding"]:"Unknown").'<br />size: '.GOTMLS_strlen(GOTMLS_convert_r($GLOBALS["GOTMLS"]["tmp"]["file_contents"])).' bytes</div><div style="overflow: auto;"><span onmouseover="document.getElementById(\'fileperms\').style.display=\'block\';" onmouseout="document.getElementById(\'fileperms\').style.display=\'none\';">'.__("Record Details:",'gotmls').'</span> ('.$fa.' )</div></td></tr><tr><td style="height: 100%"><textarea id="ta_file" style="width: 100%; height: 100%">'.GOTMLS_htmlentities(GOTMLS_convert_r($GLOBALS["GOTMLS"]["tmp"]["file_contents"])).'</textarea></td></tr></table>';
 				}
 			} elseif (($Q_post = GOTMLS_get_quarantine($ids[0])) && isset($Q_post["post_content"])) {
 				$path = $Q_post["post_type"].' ID: '.$Q_post["ID"];
@@ -1418,7 +1406,7 @@ function GOTMLS_db_scan($id = 0) {
 					foreach ($GLOBALS["GOTMLS"]["tmp"]["threats_found"] as $threats_found => $threats_name) {
 						list($start, $end, $junk) = explode("-", "$threats_found--", 3);
 						if ($start > $end)
-							$fa .= 'ERROR['.($f++).']: Threat_size{'.$threats_found.'} Content_size{'.strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]).'}';
+							$fa .= 'ERROR['.($f++).']: Threat_size{'.$threats_found.'} Content_size{'.GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]).'}';
 						else
 							$fa .= ' <a title="'.GOTMLS_htmlspecialchars($threats_name).'" href="javascript:select_text_range(\'ta_file\', '.$start.', '.$end.');">['.$f++.']</a>';
 					}
@@ -1451,7 +1439,7 @@ function GOTMLS_db_scan($id = 0) {
 					}
 					return $li_js;
 				} else {
-					return '<form style="margin: 0;" method="post" action="'.admin_url('admin-ajax.php?'.GOTMLS_set_nonce(__FUNCTION__."1448")).($Q_post["post_type"]=="revision"?'" onsubmit="return confirm(\''.__("Are you sure you want to delete this revision?",'gotmls').'\');"><input type="hidden" name="GOTMLS_fixing" value="2"><input type="hidden" name="action" value="GOTMLS_fix"><input type="submit" value="Delete this revision" style="float: right;"><input type="hidden" name="GOTMLS_fix[]" value="'.$encoded_id:"").'"></form><div id="fileperms" class="shadowed-box rounded-corners" style="display: none; position: absolute; left: 8px; top: 29px; background-color: #ccc; border: medium solid #C00; box-shadow: -3px 3px 3px #666; border-radius: 10px; padding: 10px;"><b>Record Details</b><br />encoding: '.(isset($GLOBALS["GOTMLS"]["tmp"]["encoding"])?$GLOBALS["GOTMLS"]["tmp"]["encoding"]:"Unknown").'<br />size: '.strlen(GOTMLS_convert_r($GLOBALS["GOTMLS"]["tmp"]["file_contents"])).' bytes<br />last_modified:'.$Q_post["post_modified_gmt"].'<br />post_type:'.$Q_post["post_type"].'<br />author:'.$Q_post["post_author"].'<br />status:'.$Q_post["post_status"].'</div><div style="overflow: auto;"><span onmouseover="document.getElementById(\'fileperms\').style.display=\'block\';" onmouseout="document.getElementById(\'fileperms\').style.display=\'none\';">'.__("Record Details:",'gotmls').'</span> ('.$fa.' )</div></td></tr><tr><td style="height: 100%"><textarea id="ta_file" style="width: 100%; height: 100%">'.GOTMLS_htmlentities(GOTMLS_convert_r($GLOBALS["GOTMLS"]["tmp"]["file_contents"])).'</textarea></td></tr></table>';
+					return '<form style="margin: 0;" method="post" action="'.admin_url('admin-ajax.php?'.GOTMLS_set_nonce(__FUNCTION__."1448")).($Q_post["post_type"]=="revision"?'" onsubmit="return confirm(\''.__("Are you sure you want to delete this revision?",'gotmls').'\');"><input type="hidden" name="GOTMLS_fixing" value="2"><input type="hidden" name="action" value="GOTMLS_fix"><input type="submit" value="Delete this revision" style="float: right;"><input type="hidden" name="GOTMLS_fix[]" value="'.$encoded_id:"").'"></form><div id="fileperms" class="shadowed-box rounded-corners" style="display: none; position: absolute; left: 8px; top: 29px; background-color: #ccc; border: medium solid #C00; box-shadow: -3px 3px 3px #666; border-radius: 10px; padding: 10px;"><b>Record Details</b><br />encoding: '.(isset($GLOBALS["GOTMLS"]["tmp"]["encoding"])?$GLOBALS["GOTMLS"]["tmp"]["encoding"]:"Unknown").'<br />size: '.GOTMLS_strlen(GOTMLS_convert_r($GLOBALS["GOTMLS"]["tmp"]["file_contents"])).' bytes<br />last_modified:'.$Q_post["post_modified_gmt"].'<br />post_type:'.$Q_post["post_type"].'<br />author:'.$Q_post["post_author"].'<br />status:'.$Q_post["post_status"].'</div><div style="overflow: auto;"><span onmouseover="document.getElementById(\'fileperms\').style.display=\'block\';" onmouseout="document.getElementById(\'fileperms\').style.display=\'none\';">'.__("Record Details:",'gotmls').'</span> ('.$fa.' )</div></td></tr><tr><td style="height: 100%"><textarea id="ta_file" style="width: 100%; height: 100%">'.GOTMLS_htmlentities(GOTMLS_convert_r($GLOBALS["GOTMLS"]["tmp"]["file_contents"])).'</textarea></td></tr></table>';
 				}
 			} else
 				die(GOTMLS_html_tags(array("html" => array("body" => __("This record no longer exists.",'gotmls')."<br />\n<script type=\"text/javascript\">\nwindow.parent.showhide('GOTMLS_iFrame', true);\n</script>"))));
@@ -1463,10 +1451,10 @@ function GOTMLS_db_scan($id = 0) {
 			if (isset($_REQUEST["limit"]) && is_numeric($_REQUEST["limit"]))
 				$and .= " LIMIT ".((INT) $_REQUEST["limit"]);
 			if (isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"])) {
-				if (isset($_GET["GOTMLS_scan"]) && strlen($_GET["GOTMLS_scan"]) > 8 && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"][substr($_GET["GOTMLS_scan"], 8)])) {
+				if (isset($_GET["GOTMLS_scan"]) && GOTMLS_strlen($_GET["GOTMLS_scan"]) > 8 && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"][substr($_GET["GOTMLS_scan"], 8)])) {
 					$scan_replace = str_replace("db_scan", "Database for ", GOTMLS_htmlspecialchars($_GET["GOTMLS_scan"]));
 					$db_scan_a = array(GOTMLS_sanitize(substr($_GET["GOTMLS_scan"], 8)) => $GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"][substr($_GET["GOTMLS_scan"], 8)]);
-				} elseif (isset($_GET["GOTMLS_only_file"]) && strlen($_GET["GOTMLS_only_file"]) && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"][GOTMLS_decode($_GET["GOTMLS_only_file"])])) {
+				} elseif (isset($_GET["GOTMLS_only_file"]) && GOTMLS_strlen($_GET["GOTMLS_only_file"]) && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"][GOTMLS_decode($_GET["GOTMLS_only_file"])])) {
 					$scan_replace = str_replace("db_scan", ("Database only $and for "), GOTMLS_htmlspecialchars("db_scan=".htmlspecialchars_decode(GOTMLS_decode($_GET["GOTMLS_only_file"]))));
 					$_GET["GOTMLS_scan"] = "db_scan=".GOTMLS_decode($_GET["GOTMLS_only_file"]);
 					$db_scan_a = array(GOTMLS_decode($_GET["GOTMLS_only_file"]) => $GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["db_scan"][GOTMLS_decode($_GET["GOTMLS_only_file"])]);
@@ -1598,7 +1586,7 @@ function GOTMLS_trailingslashit($dir = "") {
 }
 
 function GOTMLS_explode_dir($dir, $pre = '') {
-	if (strlen($pre))
+	if (GOTMLS_strlen($pre))
 		$dir = GOTMLS_slash($dir).$pre.$dir;
 	return explode(GOTMLS_slash($dir), $dir);
 }
@@ -1633,7 +1621,7 @@ function GOTMLS_write_quarantine($file, $className, $post_status = "private") {
 		$insert["post_modified_gmt"] = gmdate("Y-m-d H:i:s");
 		$file = $wpdb->options.':'.$file["option_id"].':"'.$file["option_name"].'"';
 	}
-	$insert["comment_count"] = strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]);
+	$insert["comment_count"] = GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]);
 	$insert["post_title"] = $file;
 	$insert["post_date"] = gmdate("Y-m-d H:i:s");
 	$insert["post_date_gmt"] = $insert["post_date"];
@@ -1647,13 +1635,13 @@ function GOTMLS_write_quarantine($file, $className, $post_status = "private") {
 		else
 			$insert["post_modified_gmt"] = $insert["post_date"];
 		if (!($insert["comment_count"] = @filesize($file)))
-			$insert["comment_count"] = strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]);
+			$insert["comment_count"] = GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["file_contents"]);
 	}
 	if (isset($GLOBALS["GOTMLS"]["tmp"]["threats_found"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["threats_found"])) {
 		$insert["post_excerpt"] = GOTMLS_encode(@serialize($GLOBALS["GOTMLS"]["tmp"]["threats_found"]));
 		$pinged = array();
 		foreach ($GLOBALS["GOTMLS"]["tmp"]["threats_found"] as $loc => $threat_name) {
-			if (isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["$className"]["$threat_name"][0]) && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["$className"]["$threat_name"][1]) && strlen($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["$className"]["$threat_name"][0]) == 5 && strlen($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["$className"]["$threat_name"][1]))
+			if (isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["$className"]["$threat_name"][0]) && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["$className"]["$threat_name"][1]) && GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["$className"]["$threat_name"][0]) == 5 && GOTMLS_strlen($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["$className"]["$threat_name"][1]))
 				$ping = $GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["$className"]["$threat_name"][1];
 			else
 				$ping = $threat_name;
@@ -1681,11 +1669,11 @@ function GOTMLS_update_status($status, $percent = -1) {
 
 function GOTMLS_flush($tag = "") {
 	$output = "";
-	if (($output = @ob_get_contents()) && strlen(trim($output)) > 18) {
+	if (($output = @ob_get_contents()) && GOTMLS_strlen(trim($output)) > 18) {
 		@ob_clean();
 		if (!(isset($_GET["eli"]) && $_GET["eli"] == "debug"))
 			$output = preg_replace('/\/\*<\!--\*\/.*?\/\*-->\*\//s', "", "$output/*-->*"."/");
-		echo "$output\n//flushed(".strlen(trim($output)).")\n";
+		echo "$output\n//flushed(".GOTMLS_strlen(trim($output)).")\n";
 		if ($tag)
 			echo "\n</$tag>\n";
 		if (@ob_get_length())
@@ -1760,7 +1748,7 @@ function GOTMLS_readdir($dir, $current_depth = 1) {
 }
 
 function GOTMLS_sexagesimal($timestamp = 0) {
-	if (!is_numeric($timestamp) && strlen($timestamp) == 5) {
+	if (!is_numeric($timestamp) && GOTMLS_strlen($timestamp) == 5) {
 		$delim = array("=", "-", "-", " ", ":");
 		foreach (str_split($timestamp) as $bit)
 			$timestamp .= array_shift($delim).substr("00".(ord($bit)>96?ord($bit)-61:(ord($bit)>64?ord($bit)-55:ord($bit)-48)), -2);
@@ -1856,14 +1844,14 @@ function GOTMLS_scandir($dir) {
 	if (!(isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["scan_depth"]) && $GLOBALS["GOTMLS"]["tmp"]["settings_array"]["scan_depth"]))
 		echo GOTMLS_return_threat("errors", "blocked", $dir, GOTMLS_error_link("Directory Scan Depth set to 0, no files will be scanned!"));
 	elseif (isset($_GET["GOTMLS_skip_dir"]) && $dir == GOTMLS_decode($_GET["GOTMLS_skip_dir"])) {
-		if (isset($_GET["GOTMLS_only_file"]) && strlen($_GET["GOTMLS_only_file"]))
+		if (isset($_GET["GOTMLS_only_file"]) && GOTMLS_strlen($_GET["GOTMLS_only_file"]))
 			echo GOTMLS_return_threat("errors", "blocked", GOTMLS_trailingslashit($dir).GOTMLS_decode($_GET["GOTMLS_only_file"]), GOTMLS_error_link("Failed to read this file!".GOTMLS_read_error(GOTMLS_trailingslashit($dir).GOTMLS_decode($_GET["GOTMLS_only_file"])), GOTMLS_trailingslashit($dir).GOTMLS_decode($_GET["GOTMLS_only_file"])));
 		else
 			echo GOTMLS_return_threat("errors", "blocked", $dir, GOTMLS_error_link(__("Failed to read directory!",'gotmls')).GOTMLS_read_error($dir));
 	} else {
 		if (is_dir($dir) && is_array($files = GOTMLS_getfiles($dir))) {
 			if (isset($_GET["GOTMLS_only_file"])) {
-				if (strlen($_GET["GOTMLS_only_file"])) {
+				if (GOTMLS_strlen($_GET["GOTMLS_only_file"])) {
 					$path = GOTMLS_trailingslashit($dir).GOTMLS_decode($_GET["GOTMLS_only_file"]);
 					if (is_file($path)) {
 						GOTMLS_check_file($path);
@@ -1923,7 +1911,7 @@ function GOTMLS_safe_url($url, $allow = array(' ', '%20')) {
 
 function GOTMLS_reset_settings($item, $key) {
 	$key_parts = explode("_", $key."_");
-	if (strlen($key_parts[0]) != 4 && $key_parts[0] != "exclude")
+	if (GOTMLS_strlen($key_parts[0]) != 4 && $key_parts[0] != "exclude")
 		unset($GLOBALS["GOTMLS"]["tmp"]["settings_array"][$key]);
 }
 
@@ -1947,17 +1935,22 @@ function GOTMLS_get_URL($URL) {
 				unset($GLOBALS["GOTMLS"]["get_URL"]["$URI"]);
 	} else
 		$GLOBALS["GOTMLS"]["get_URL"] = array();
-	$URI = md5(preg_replace('/GOTMLS_mt[\[\]]*=[0-9a-f]*/i', "", $URL));
-	if (isset($GLOBALS["GOTMLS"]["get_URL"]["$URI"]["response"]) && strlen($response = GOTMLS_decode($GLOBALS["GOTMLS"]["get_URL"]["$URI"]["response"])))
+	$URI = md5(preg_replace('/GOTMLS_mt[\[\]]*+=[a-f\d]*+/i', "", $URL));
+	if (isset($GLOBALS["GOTMLS"]["get_URL"]["$URI"]["response"]) && GOTMLS_strlen($response = ($GLOBALS["GOTMLS"]["get_URL"]["$URI"]["response"])))
 		$method = "cached";
 	else {
 		$GLOBALS["GOTMLS"]["get_URL"]["$URI"] = array("time" => $min);
 		if (function_exists($method = "wp_remote_get")) {
 			$GLOBALS["GOTMLS"]["get_URL"]["$URI"][$method] = wp_remote_get($URL, array("sslverify" => false));
-			if (200 == wp_remote_retrieve_response_code($GLOBALS["GOTMLS"]["get_URL"]["$URI"][$method]))
+			if (200 == wp_remote_retrieve_response_code($GLOBALS["GOTMLS"]["get_URL"]["$URI"][$method])) {
 				$response = wp_remote_retrieve_body($GLOBALS["GOTMLS"]["get_URL"]["$URI"][$method]);
+				if (isset($GLOBALS["GOTMLS"]["get_URL"]["$URI"][$method]["http_response"]))
+					unset($GLOBALS["GOTMLS"]["get_URL"]["$URI"][$method]["http_response"]);
+				if (isset($GLOBALS["GOTMLS"]["get_URL"]["$URI"][$method]["body"]))
+					unset($GLOBALS["GOTMLS"]["get_URL"]["$URI"][$method]["body"]);
+			}
 		}
-		if (strlen($response) == 0 && function_exists($method = "curl_exec")) {
+		if (GOTMLS_strlen($response) == 0 && function_exists($method = "curl_exec")) {
 			$curl_hndl = curl_init();
 			curl_setopt($curl_hndl, CURLOPT_URL, $URL);
 			curl_setopt($curl_hndl, CURLOPT_TIMEOUT, 30);
@@ -1980,17 +1973,17 @@ function GOTMLS_get_URL($URL) {
 				$GLOBALS["GOTMLS"]["get_URL"]["$URI"][$method] = curl_error($curl_hndl);
 			curl_close($curl_hndl);
 		}
-		if (strlen($response) == 0 && function_exists($method = "file_get_contents")) {
+		if (GOTMLS_strlen($response) == 0 && function_exists($method = "file_get_contents")) {
 			try {
 				$response = @file_get_contents($URL).'';
 			} catch(Exception $e) {
 				$GLOBALS["GOTMLS"]["get_URL"]["$URI"][$method] = $e->getTrace();
 			}
 		}
-		$GLOBALS["GOTMLS"]["get_URL"]["$URI"]["response"] = GOTMLS_encode($response);
+		$GLOBALS["GOTMLS"]["get_URL"]["$URI"]["response"] = ($response);
 	}
 	GOTMLS_update_option('get_URL', $GLOBALS["GOTMLS"]["get_URL"], false);
-	if (isset($_GET["GOTMLS_debug"]) && (strlen($response) == 0 || $_GET["GOTMLS_debug"] == "GOTMLS_get_URL"))
-		print_r(array("$method $URI:".strlen($response)=>htmlspecialchars($GLOBALS["GOTMLS"]["get_URL"]["$URI"]["time"]." ~ $min: ".count($GLOBALS["GOTMLS"]["get_URL"]))));
+	if (isset($_GET["GOTMLS_debug"]) && (GOTMLS_strlen($response) == 0 || $_GET["GOTMLS_debug"] == "GOTMLS_get_URL"))
+		print_r(array("$method $URI:".GOTMLS_strlen($response)=>htmlspecialchars($GLOBALS["GOTMLS"]["get_URL"]["$URI"]["time"]." ~ $min: ".count($GLOBALS["GOTMLS"]["get_URL"]))));
 	return $response;
 }

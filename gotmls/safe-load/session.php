@@ -2,7 +2,7 @@
 /**
  * GOTMLS SESSION Start
  * @package GOTMLS
- * @since 4.23.73
+ * @since 4.23.77
 */
 
 require_once(dirname(__FILE__)."/trace.php");
@@ -11,10 +11,12 @@ if (!defined("GOTMLS_SESSION_TIME")) {
 	define("GOTMLS_SESSION_TIME", microtime(true));
 
 	function GOTMLS_session_start($ID_sess = false) {
-		if (!session_id())
+		GOTMLS_define("GOTMLS_SESSION_ID", session_id());
+		if (!($GOTMLS_LOGIN_KEY = GOTMLS_SESSION_ID)) {
 			GOTMLS_define("SESS_TEST", @session_start());
-		if (!($GOTMLS_LOGIN_KEY = session_id()))
-			GOTMLS_define("SESS_FILE", $GOTMLS_LOGIN_KEY = GOTMLS_session_file());
+			if (!($GOTMLS_LOGIN_KEY = session_id()))
+				GOTMLS_define("SESS_FILE", $GOTMLS_LOGIN_KEY = GOTMLS_session_file());
+		}
 		if (isset($_SESSION["GOTMLS_SESSION_TIME"]))
 			$_SESSION["GOTMLS_SESSION_LAST"] = $_SESSION["GOTMLS_SESSION_TIME"];
 		else

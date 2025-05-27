@@ -4,7 +4,7 @@
  * @package GOTMLS
 */
 
-define("GOTMLS_Version", '4.23.77');
+define("GOTMLS_Version", '4.23.81');
 define("GOTMLS_SAFELOAD_DIR", dirname(__FILE__)."/");
 define("GOTMLS_CHMOD_FILE", 0644);
 define("GOTMLS_CHMOD_DIR", 0755);

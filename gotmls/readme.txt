@@ -7,10 +7,10 @@ Donate link: https://gotmls.net/donate/
 Tags: anti-malware, security, scanner, brute-force, firewall
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.77
-Stable tag: 4.23.77
+Version: 4.23.81
+Stable tag: 4.23.81
 Requires at least: 3.3
-Tested up to: 6.8
+Tested up to: 6.8.1
 
 This Anti-Malware scanner searches for Malware, Viruses, and other security threats and vulnerabilities on your server and it helps you fix them.
 
@@ -99,6 +99,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. The Quarantine showing threats that have been fix already.
 
 == Changelog ==
+
+= 4.23.81 =
+* Fixed Scan Settings issue when only one threat type is selected or when only DB Scan is selected.
+* Added debugging with file stats for single directory scans.
+* Fixed some Defined Constants that were causing an error in PHP 8.X.
+* Checked code for compatibility with WordPress 6.8.1.
 
 = 4.23.77 =
 * Added on option to the Brute-Force Login Protection to not use PHP session_start to store the LOGIN_KEY. 
@@ -503,6 +509,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * First versions available for WordPress (code removed, no longer compatible).
 
 == Upgrade Notice ==
+
+= 4.23.81 =
+Fixed some Defined Constants that were causing an error in PHP 8.X and a Scan Settings issue when only one threat type is selected or when only DB Scan is selected, and checked code for compatibility with WordPress 6.8.1.
 
 = 4.23.77 =
 Added on option to the Brute-Force Login Protection to not use PHP session_start to store the LOGIN_KEY, updated JavaScript arrays for better efficiency, fixed notice about Passing null to strlen being Deprecated in PHP 8.X and function _load_textdomain_just_in_time being called incorrectly in WP 6.7 and above, and checked code for compatibility with WordPress 6.8 and ClassicPress 2.4.1.

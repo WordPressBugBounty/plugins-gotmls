@@ -10,7 +10,7 @@ Donate link: https://gotmls.net/donate/
 Description: This Anti-Virus/Anti-Malware plugin searches for Malware and other Virus like threats and vulnerabilities on your server and helps you remove them. It's always growing and changing to adapt to new threats so let me know if it's not working for you.
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.77
+Version: 4.23.81
 Requires PHP: 5.6
 Requires CP: 1.1.1
 */
@@ -48,8 +48,10 @@ function GOTMLS_install() {
 register_activation_hook(__FILE__, "GOTMLS_install");
 
 function GOTMLS_uninstall() {
-	delete_option('GOTMLS_get_URL_array');
+	delete_option('GOTMLS_get_URL_blob');
 	delete_option('GOTMLS_definitions_blob');
+	delete_option('GOTMLS_nonce_blob');
+	delete_option('GOTMLS_settings_array');
 	GOTMLS_create_session_file(false);
 }
 register_deactivation_hook(__FILE__, "GOTMLS_uninstall");
@@ -1000,7 +1002,7 @@ function update_status(title, time) {
 	$vars = "var i, intrvl, direrrors=0";
 	$fix_button_js = "";
 	$found = "";
-	$li_js = "return false;";
+	$li_js = ($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["scan_depth"]==1?"":"return false;");
 	if ((isset($_REQUEST["scan_type"]) && $_REQUEST["scan_type"] == "Quick Scan") || (!(isset($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"]) && is_array($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"])))) {
 		$GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"] = array();
 		foreach ($GLOBALS["GOTMLS"]["tmp"]["threat_levels"] as $check)
@@ -1109,7 +1111,7 @@ var startTime = 0;
 			if (!($dir = implode(GOTMLS_slash(), array_slice($dirs, 0, -1 * (2 + (INT) $_REQUEST["scan_what"])))))
 				$dir = "/";
 			$scanlog = array("dir" => $dir, "start" => time(), "type" => GOTMLS_sanitize($_REQUEST["scan_type"]));
-			if (isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]) && count($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]) == 1 && ($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"][0] = "db_scan"))
+			if (isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]) && count($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]) == 1 && ($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"][0] == "db_scan"))
 				$GLOBALS["GOTMLS"]["tmp"]["settings_array"]["scan_depth"] = 0;
 			$scanlog["settings"] = $GLOBALS["GOTMLS"]["tmp"]["settings_array"];
 			if (isset($_REQUEST['scan_only']))
@@ -1154,7 +1156,8 @@ var startTime = 0;
 				echo GOTMLS_update_status(__("Completed!",'gotmls'), 100);
 			else {
 				echo GOTMLS_update_status(__("Starting Scan ...",'gotmls'));
-				$DB_scan_JS = ", 'db_scan'";
+				if (isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]) && in_array("db_scan", $GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]))
+					$DB_scan_JS = ", 'db_scan'";
 				if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"]) && is_array($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"]) && in_array("db_scan", $GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"]))
 					echo GOTMLS_return_threat("dirs", "wait", "db_scan");//.GOTMLS_update_status(__("Starting Database Scan ...",'gotmls'));
 				//else					$DB_scan_JS = "";

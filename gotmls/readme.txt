@@ -7,10 +7,10 @@ Donate link: https://gotmls.net/donate/
 Tags: anti-malware, security, scanner, brute-force, firewall
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.81
-Stable tag: 4.23.81
+Version: 4.23.85
+Stable tag: 4.23.85
 Requires at least: 3.3
-Tested up to: 6.8.1
+Tested up to: 6.8.3
 
 This Anti-Malware scanner searches for Malware, Viruses, and other security threats and vulnerabilities on your server and it helps you fix them.
 
@@ -99,6 +99,14 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. The Quarantine showing threats that have been fix already.
 
 == Changelog ==
+
+= 4.23.85 =
+* Fixed the post_status field on custom post type for scan results and added log of all scan errors to the post_meta.
+
+= 4.23.83 =
+* Fixed a missing capability check on an admin-ajax API endpoint.
+* Changed URLs for better compatibility with both HTTPS sites and HTTP sites.
+* Checked code for compatibility with WordPress 6.8.3.
 
 = 4.23.81 =
 * Fixed Scan Settings issue when only one threat type is selected or when only DB Scan is selected.
@@ -509,6 +517,12 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * First versions available for WordPress (code removed, no longer compatible).
 
 == Upgrade Notice ==
+
+= 4.23.85 =
+Fixed the post_status field on custom post type for scan results and added log of all scan errors to the post_meta.
+
+= 4.23.83 =
+Fixed missing capability check on admin-ajax API, changed URLs for better compatibility with HTTPS and HTTP websites, and checked code for compatibility with WordPress 6.8.3.
 
 = 4.23.81 =
 Fixed some Defined Constants that were causing an error in PHP 8.X and a Scan Settings issue when only one threat type is selected or when only DB Scan is selected, and checked code for compatibility with WordPress 6.8.1.

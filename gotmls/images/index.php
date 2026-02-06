@@ -2,7 +2,7 @@
 /**
  * GOTMLS Plugin Global Variables and Functions
  * @package GOTMLS
- * @since 4.23.81
+ * @since 4.23.85
 */
 
 define("GOTMLS_plugin_path", dirname(dirname(__FILE__))."/");
@@ -38,7 +38,7 @@ $GLOBALS["GOTMLS"] = array(
 		"mt" => ((isset($_REQUEST["mt"])&&GOTMLS_strlen($_REQUEST["mt"])==32)?$_REQUEST["mt"]:md5(microtime(true))), 
 		"threat_files" => array("htaccess"=>".htaccess","timthumb"=>"thumb.php"), 
 		"apache" => array(),
-		"skip_ext"=>array("png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "psd", "svg", "webp", "doc", "docx", "otf", "ttf", "fla", "flv", "mov", "mp3", "pdf", "css", "pot", "po", "mo", "so", "exe", "zip", "7z", "gz", "rar"),
+		"skip_ext"=>array("png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "psd", "svg", "webp", "doc", "docx", "otf", "ttf", "fla", "flv", "mov", "mp3", "mp4", "pptx", "ppsx", "pdf", "css", "pot", "po", "mo", "so", "exe", "zip", "7z", "gz", "rar"),
 		"execution_time" => 60,
 		"default" => array("msg_position" => array("80px", "40px", "400px", "600px")),
 		"Definition" => array("Default" => "CCIGG"),
@@ -72,9 +72,9 @@ else
 GOTMLS_define("GOTMLS_script_URI", preg_replace('/\&(last_)?mt=[0-9\.a-f]+/i', '', str_replace('&amp;', '&', GOTMLS_htmlspecialchars($_SERVER["REQUEST_URI"], ENT_QUOTES))).'&mt='.$GLOBALS["GOTMLS"]["tmp"]["mt"]);
 GOTMLS_define("GOTMLS_plugin_home", "https://gotmls.net/");
 if (function_exists("plugins_url"))
-	GOTMLS_define("GOTMLS_images_path", plugins_url('/', __FILE__));
+	GOTMLS_define("GOTMLS_images_path", GOTMLS_fix_url(plugins_url('/', __FILE__)));
 elseif (function_exists("plugin_dir_url"))
-	GOTMLS_define("GOTMLS_images_path", plugin_dir_url(__FILE__));
+	GOTMLS_define("GOTMLS_images_path", GOTMLS_fix_url(plugin_dir_url(__FILE__)));
 elseif (isset($_SERVER["DOCUMENT_ROOT"]) && ($_SERVER["DOCUMENT_ROOT"]) && GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"]) < __FILE__ && substr(__FILE__, 0, GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"])) == $_SERVER["DOCUMENT_ROOT"])
 	GOTMLS_define("GOTMLS_images_path", substr(dirname(__FILE__), GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"])).'/');
 elseif (isset($_SERVER["SCRIPT_FILENAME"]) && isset($_SERVER["DOCUMENT_ROOT"]) && ($_SERVER["DOCUMENT_ROOT"]) && GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"]) < GOTMLS_strlen($_SERVER["SCRIPT_FILENAME"]) && substr($_SERVER["SCRIPT_FILENAME"], 0, GOTMLS_strlen($_SERVER["DOCUMENT_ROOT"])) == $_SERVER["DOCUMENT_ROOT"])
@@ -126,6 +126,13 @@ function GOTMLS_get_corefile_URL($path, $hash) {
 
 function GOTMLS_Invalid_Nonce($pre = "//Error: ") {
 	return sprintf(__("%s Invalid or expired Nonce Token! %s Refresh and try again?",'gotmls'), $pre, (isset($_REQUEST["GOTMLS_mt"])?(" (".GOTMLS_htmlspecialchars($_REQUEST["GOTMLS_mt"]).((GOTMLS_strlen($_REQUEST["GOTMLS_mt"]) == 32)?(isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["hour"])&&isset($GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["user"])?(substr($pre, 0, 7)=="//DEBUG"?GOTMLS_htmlspecialchars(", U:".$GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["user"].", H:".$GLOBALS["GOTMLS"]["tmp"]["nonce"][$_REQUEST["GOTMLS_mt"]]["hour"]."!) "):" !UH!) "):" !found!) "):" !len[".GOTMLS_strlen($_REQUEST["GOTMLS_mt"])."]!) ")):" (GOTMLS_mt !set!) "));
+}
+
+function GOTMLS_kill_invalid_user($pre = "\n//Permission Error: ") {
+	if ($return = GOTMLS_user_can())
+		return $return;
+	else
+		die(sprintf(__("%s Invalid User Authentication!",'gotmls'), $pre));
 }
 
 function GOTMLS_set_nonce($context = "NULL", $uid = 0) {
@@ -221,12 +228,16 @@ function GOTMLS_esc_url($url) {
 	return $url;
 }
 
+function GOTMLS_fix_url($url) {
+	return preg_replace('/^https?:\/\//i', '//', "$url");
+}
+
 function GOTMLS_admin_url($action, $url = '') {
 	$return = admin_url("admin-ajax.php?action=$action");
 	foreach (array('eli', 'oversize', 'GOTMLS_debug') as $pass_on)
 		if (isset($_GET["$pass_on"]))
 			$return .= "&$pass_on=".GOTMLS_esc_url($_GET["$pass_on"]);
-	return ("$return&$url");
+	return GOTMLS_fix_url("$return&$url");
 }
 
 function GOTMLS_dashicon_button($title, $dashicon = "editor-help", $style = 'text-decoration: none;', $contents = "", $href = "javascript:void(0);") {
@@ -980,8 +991,19 @@ function GOTMLS_scanlog_title() {
 				$time = floor($time/$units[$ukeys[$key]]);
 			if (1 == $time)
 				$unit = substr($unit, 0, -1);
-			if ($time)
-				$GLOBALS["GOTMLS"]["scan"]["title"] .= " ran for $time $unit";
+			if ($time) {
+				$issues = "";
+				if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"]) && is_array($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"])) {
+					foreach ($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"] as $clas => $found) { 
+						if ($issues)
+							$issues .= " and ";
+						else
+							$issues .= " with ";
+						$issues .= count($found)." $clas";
+					}
+				}
+				$GLOBALS["GOTMLS"]["scan"]["title"] .= " and finished $issues in $time $unit";
+			}
 		} else
 			$GLOBALS["GOTMLS"]["scan"]["title"] .= " was not finished!";
 	} else
@@ -1031,6 +1053,7 @@ function GOTMLS_update_scanlog($scan_log, $status = "") {
 		$values["post_content"] = json_encode($GLOBALS["GOTMLS"]["scan"]["log"]);
 		$values["post_author"] = GOTMLS_get_current_user_id(0);
 		$values["post_modified"] = date("Y-m-d H:i:s", (int) microtime(true));
+		$values["post_status"] = 'private';
 		if (!(isset($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]) && is_array($GLOBALS["GOTMLS"]["scan"]["log"]["settings"])) && isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]))
 			$GLOBALS["GOTMLS"]["scan"]["log"]["settings"] = $GLOBALS["GOTMLS"]["tmp"]["settings_array"];
 		if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["start"]) && is_numeric($GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["start"]) && ($GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["start"] > 0)) {
@@ -1043,6 +1066,14 @@ function GOTMLS_update_scanlog($scan_log, $status = "") {
 					$GLOBALS["GOTMLS"]["scan"]["key"] = md5($GLOBALS["GOTMLS"]["MT"]);
 				$values["post_name"] = $GLOBALS["GOTMLS"]["scan"]["key"];
 				$scan_log["inserted"] = $wpdb->insert($wpdb->posts, $values);
+			}
+			if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["finish"]) && is_numeric($GLOBALS["GOTMLS"]["scan"]["log"]["scan"]["finish"]) && GOTMLS_strlen($scanlog_key = preg_replace('/[^0-9a-f]++]i/', "", $GLOBALS["GOTMLS"]["scan"]["key"])) == 32) {
+				if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"]) && is_array($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"]) && count($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"]) && ($gotmls_results_ID = $wpdb->get_var($wpdb->prepare("SELECT `ID` FROM `$wpdb->posts` WHERE `post_type` = 'gotmls_results' AND `post_name` = %s", $scanlog_key)))) {
+					$wpdb->delete($wpdb->postmeta, ["post_id" => $gotmls_results_ID]);
+					foreach ($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"] as $clas => $found) {
+						$wpdb->insert($wpdb->postmeta, ["post_id" => $gotmls_results_ID, "meta_key" => $clas, "meta_value" => json_encode($found)]);
+					}
+				}
 			}
 		}
 	}
@@ -1568,9 +1599,17 @@ function GOTMLS_return_threat($className, $imageFile, $fileName, $link = "") {
 	$fileName64 = GOTMLS_encode(htmlspecialchars_decode($fileName));
 	$li_js = "/*-->*"."/";
 	$imageF = explode(".", $imageFile.".");
-	if ($className != "scanned")
+	if ($className != "scanned") {
 		$li_js .= "\n$className++;\ndivx=document.getElementById('found_$className');\nif (divx) {\n\tvar newli = document.createElement('li');\n\tnewli.innerHTML='<img src=\"".GOTMLS_strip4java(GOTMLS_images_path.$imageFile).'.gif" height=16 width=16 alt="'.$GOTMLS_image_alt[$imageF[0]].'" style="float: left;" id="'.$imageFile."_$fileName64\">".GOTMLS_strip4java($link, true).$fileNameJS.($link?"</a>';\n\tdivx.display='block":"")."';\n\tdivx.appendChild(newli);\n}";
-	elseif ($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["scan_depth"] == 1) {
+		if (substr($className, 0, 3) != "dir" && substr($className, 0, 4) != "skip") {
+			if (!(isset($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"]) && is_array($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"])))
+				$GLOBALS["GOTMLS"]["scan"]["log"]["file_results"] = array();
+			if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"]["$className"]) && is_array($GLOBALS["GOTMLS"]["scan"]["log"]["file_results"]["$className"]))
+				$GLOBALS["GOTMLS"]["scan"]["log"]["file_results"]["$className"][] = "$fileName";
+			else
+				$GLOBALS["GOTMLS"]["scan"]["log"]["file_results"]["$className"] = array("$fileName");
+		}
+	} elseif ($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["scan_depth"] == 1) {
 		if (isset($GLOBALS["GOTMLS"]["tmp"]["file_scan"]["errors"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["file_scan"]["errors"]) && count($GLOBALS["GOTMLS"]["tmp"]["file_scan"]["errors"]))
 			$text = preg_replace('/[\r\n]/', " ", print_r($GLOBALS["GOTMLS"]["tmp"]["file_scan"]["errors"],1));
 		else

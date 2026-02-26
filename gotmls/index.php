@@ -10,7 +10,7 @@ Donate link: https://gotmls.net/donate/
 Description: This Anti-Virus/Anti-Malware plugin searches for Malware and other Virus like threats and vulnerabilities on your server and helps you remove them. It's always growing and changing to adapt to new threats so let me know if it's not working for you.
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.85
+Version: 4.23.87
 Requires PHP: 5.6
 Requires CP: 1.1.1
 */
@@ -22,7 +22,7 @@ else
  *           /  /\     GOTMLS Main Plugin File
  *          /  /:/     @package GOTMLS
  *         /__/::\
- Copyright \__\/\:\__  © 2012-2025 Eli Scheetz (email: eli@gotmls.net)
+ Copyright \__\/\:\__  © 2012-2026 Eli Scheetz (email: eli@gotmls.net)
  *            \  \:\/\
  *             \__\::/ This program is free software; you can redistribute it
  *     ___     /__/:/ and/or modify it under the terms of the GNU General Public
@@ -1162,6 +1162,7 @@ var startTime = 0;
 				echo GOTMLS_update_status(__("Completed!",'gotmls'), 100);
 			else {
 				echo GOTMLS_update_status(__("Starting Scan ...",'gotmls'));
+				$DB_scan_JS = "";
 				if (isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]) && is_array($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]) && in_array("db_scan", $GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]))
 					$DB_scan_JS = ", 'db_scan'";
 				if (isset($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"]) && is_array($GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"]) && in_array("db_scan", $GLOBALS["GOTMLS"]["scan"]["log"]["settings"]["check"]))

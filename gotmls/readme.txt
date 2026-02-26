@@ -7,10 +7,10 @@ Donate link: https://gotmls.net/donate/
 Tags: anti-malware, security, scanner, brute-force, firewall
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.85
-Stable tag: 4.23.85
+Version: 4.23.87
+Stable tag: 4.23.87
 Requires at least: 3.3
-Tested up to: 6.8.3
+Tested up to: 6.9.1
 
 This Anti-Malware scanner searches for Malware, Viruses, and other security threats and vulnerabilities on your server and it helps you fix them.
 
@@ -31,7 +31,7 @@ This Anti-Malware scanner searches for Malware, Viruses, and other security thre
 
 Register this plugin at [GOTMLS.NET](http://gotmls.net/) and get access to new definitions of "Known Threats" and added features like Automatic Removal, plus patches for specific security vulnerabilities like old versions of timthumb. Updated definition files can be downloaded automatically within the admin once your Key is registered. Otherwise, this plugin just scans for "Potential Threats" and leaves it up to you to identify and remove the malicious ones.
 
-NOTICE: This plugin make call to GOTMLS.NET to check for updates not unlike what WordPress does when checking your plugins and themes for new versions. Staying up-to-date is an essential part of any security plugin and this plugin can let you know when there are new plugin and definition update available. If you're allergic to "phone home" scripts then don't use this plugin (or WordPress at all for that matter).
+NOTICE: This plugin makes calls to GOTMLS.NET to check for updates not unlike what WordPress does when checking your plugins and themes for new versions. Staying up-to-date is an essential part of any security plugin and this plugin can let you know when there are new plugin and definition update available. If you're allergic to "phone home" scripts then don't use this plugin (or WordPress at all for that matter).
 
 **Special thanks to:**
 
@@ -100,6 +100,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= 4.23.87 =
+* Checked code for compatibility with WordPress 6.9.1 and ClassicPress 2.6.
+
 = 4.23.85 =
 * Fixed the post_status field on custom post type for scan results and added log of all scan errors to the post_meta.
 
@@ -115,7 +118,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * Checked code for compatibility with WordPress 6.8.1.
 
 = 4.23.77 =
-* Added on option to the Brute-Force Login Protection to not use PHP session_start to store the LOGIN_KEY. 
+* Added an option to the Brute-Force Login Protection to not use PHP session_start to store the LOGIN_KEY. 
 * Updated JavaScript arrays for better efficiency when larger arrays are created.
 * Fixed notice about Passing null to strlen being Deprecated in PHP 8.X.
 * Fixed notice about function _load_textdomain_just_in_time being called incorrectly in WP 6.7 and above.
@@ -518,6 +521,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Upgrade Notice ==
 
+= 4.23.87 =
+Checked code for compatibility with WordPress 6.9.1 and ClassicPress 2.6.
+
 = 4.23.85 =
 Fixed the post_status field on custom post type for scan results and added log of all scan errors to the post_meta.
 
@@ -528,7 +534,7 @@ Fixed missing capability check on admin-ajax API, changed URLs for better compat
 Fixed some Defined Constants that were causing an error in PHP 8.X and a Scan Settings issue when only one threat type is selected or when only DB Scan is selected, and checked code for compatibility with WordPress 6.8.1.
 
 = 4.23.77 =
-Added on option to the Brute-Force Login Protection to not use PHP session_start to store the LOGIN_KEY, updated JavaScript arrays for better efficiency, fixed notice about Passing null to strlen being Deprecated in PHP 8.X and function _load_textdomain_just_in_time being called incorrectly in WP 6.7 and above, and checked code for compatibility with WordPress 6.8 and ClassicPress 2.4.1.
+Added option to Brute-Force Protection to not use PHP session_start, updated JavaScript arrays, fixed Deprecation notice in PHP 8.X and function _load_textdomain_just_in_time being called incorrectly in WP 6.7, and checked code for compatibility with WordPress 6.8.
 
 = 4.23.73 =
 Added cleanup for old _session files, fxed hidden files exception to the skip by extention option and updates to manual session files when PHP sessions are not saves, and checked code for compatibility with WordPress 6.7.1.

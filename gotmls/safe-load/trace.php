@@ -4,7 +4,7 @@
  * @package GOTMLS
 */
 
-define("GOTMLS_Version", '4.23.87');
+define("GOTMLS_Version", '4.23.88');
 define("GOTMLS_SAFELOAD_DIR", dirname(__FILE__)."/");
 define("GOTMLS_CHMOD_FILE", 0644);
 define("GOTMLS_CHMOD_DIR", 0755);
@@ -194,7 +194,7 @@ function GOTMLS_error_div($error_str, $class = "error") {
 }
 
 function GOTMLS_uckserialize($unsafe_serialized) {
-	if (!(is_array($unsafe_serialized)) && (is_array($safe_unserialized = @unserialize(preg_replace('/[oc]:\d+:".*?":(\d+):\{/is', 'a:\1:{', $unsafe_serialized)))))
+	if (!(is_array($unsafe_serialized)) && (is_array($safe_unserialized = @unserialize(preg_replace('/[oc]:[\+\d]++:".*?":([\+\d]++):\{/is', 'a:\1:{', $unsafe_serialized)))))
 		return $safe_unserialized;
 	return $unsafe_serialized;
 }

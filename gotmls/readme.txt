@@ -7,8 +7,8 @@ Donate link: https://gotmls.net/donate/
 Tags: anti-malware, security, scanner, brute-force, firewall
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.87
-Stable tag: 4.23.87
+Version: 4.23.88
+Stable tag: 4.23.88
 Requires at least: 3.3
 Tested up to: 6.9.1
 
@@ -99,6 +99,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. The Quarantine showing threats that have been fix already.
 
 == Changelog ==
+
+= 4.23.88 =
+* Fixed PHP Object Injection vulnerability with DB Scan.
 
 = 4.23.87 =
 * Checked code for compatibility with WordPress 6.9.1 and ClassicPress 2.6.
@@ -520,6 +523,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * First versions available for WordPress (code removed, no longer compatible).
 
 == Upgrade Notice ==
+
+= 4.23.88 =
+Fixed PHP Object Injection vulnerability with DB Scan.
 
 = 4.23.87 =
 Checked code for compatibility with WordPress 6.9.1 and ClassicPress 2.6.

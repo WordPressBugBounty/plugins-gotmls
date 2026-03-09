@@ -10,7 +10,7 @@ Donate link: https://gotmls.net/donate/
 Description: This Anti-Virus/Anti-Malware plugin searches for Malware and other Virus like threats and vulnerabilities on your server and helps you remove them. It's always growing and changing to adapt to new threats so let me know if it's not working for you.
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.87
+Version: 4.23.88
 Requires PHP: 5.6
 Requires CP: 1.1.1
 */
@@ -633,6 +633,7 @@ function GOTMLS_ajax_load_update() {
 	$saved = false;
 	$moreJS = "";
 	$finJS = "\n}";
+	$user_donations_src = 0;
 	$form = 'registerKeyForm';
 	$innerHTML = "<li style=\\\"color: #f00\\\">Your Installation Key could not be confirmed!</li>";
 	$autoUpJS = '<span style="color: #C00;">This new feature is currently only available to registered users who have donated $29 or more.</span><br />';

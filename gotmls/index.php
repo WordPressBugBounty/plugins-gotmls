@@ -10,7 +10,7 @@ Donate link: https://gotmls.net/donate/
 Description: This Anti-Virus/Anti-Malware plugin searches for Malware and other Virus like threats and vulnerabilities on your server and helps you remove them. It's always growing and changing to adapt to new threats so let me know if it's not working for you.
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.88
+Version: 4.23.89
 Requires PHP: 5.6
 Requires CP: 1.1.1
 */
@@ -549,9 +549,9 @@ function GOTMLS_Firewall_Options() {
 	if ($GOTMLS_nonce_found && isset($_POST["GOTMLS_firewall_option"]) && GOTMLS_strlen($_POST["GOTMLS_firewall_option"]) && isset($_POST["GOTMLS_firewall_value"]) && GOTMLS_strlen($_POST["GOTMLS_firewall_value"])) {
 		$GLOBALS["GOTMLS"]["tmp"]["settings_array"]["firewall"][GOTMLS_sanitize($_POST["GOTMLS_firewall_option"])] = (INT) $_POST["GOTMLS_firewall_value"];
 		if (update_option("GOTMLS_settings_array", $GLOBALS["GOTMLS"]["tmp"]["settings_array"]))
-			$save_action = "\n{$lt}div onclick=\"this.style.display='none';\" style='position: relative; top: -40px; margin: 0 300px 0 130px;' class='updated'$gt\nSettings Saved!$lt/div$gt\n";
+			$save_action = "\n{$lt}div onclick=\"this.style.display='none';\" style='padding: 2px 12px; position: relative; top: -40px; margin: 0 300px 0 130px;' class='updated'$gt\nSettings Saved!$lt/div$gt\n";
 		else
-			$save_action = "\n{$lt}div onclick=\"this.style.display='none';\" style='position: relative; top: -40px; margin: 0 300px 0 130px;' class='updated'$gt\nSave Failed!$lt/div$gt\n";
+			$save_action = "\n{$lt}div onclick=\"this.style.display='none';\" style='padding: 2px 12px; position: relative; top: -40px; margin: 0 300px 0 130px;' class='updated'$gt\nSave Failed!$lt/div$gt\n";
 	}
 	$sec_opts = $lt.'form method="POST" name="GOTMLS_Form_firewall"'.$gt.$lt.'input type="hidden" id="fw_opt" name="GOTMLS_firewall_option" value="traversal"'.$gt.$lt.'input type="hidden" name="GOTMLS_firewall_value" id="fw_val" value="0"'.$gt.$Firewall_nonce;
 	if (isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["firewall"]) && array($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["firewall"]))
@@ -1049,7 +1049,7 @@ function showOnly(what) {
 }
 var startTime = 0;
 '.$lt.'/script'.$gt.GOTMLS_box($ScanSettings, $scan_opts);
-	$Settings_Saved = "\n{$lt}div onclick=\"this.style.display='none';\" style='position: relative; top: -50px; margin: 0 300px 0 130px;' class='updated'$gt\nSettings Saved!$lt/div$gt\n";//script type='text/javascript'$gt\nalert('Settings Saved!');\n$lt/script$gt\n";
+	$Settings_Saved = "\n{$lt}div onclick=\"this.style.display='none';\" style='padding: 2px 12px; position: relative; top: -50px; margin: 0 300px 0 130px;' class='updated'$gt\nSettings Saved!$lt/div$gt\n";
 	if (isset($_REQUEST["scan_type"]) && $_REQUEST["scan_type"] == "Save") {
 		if ($GOTMLS_nonce_found) {
 			update_option('GOTMLS_settings_array', $GLOBALS["GOTMLS"]["tmp"]["settings_array"]);

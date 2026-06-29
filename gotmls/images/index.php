@@ -2,7 +2,7 @@
 /**
  * GOTMLS Plugin Global Variables and Functions
  * @package GOTMLS
- * @since 4.23.85
+ * @since 4.23.89
 */
 
 define("GOTMLS_plugin_path", dirname(dirname(__FILE__))."/");
@@ -35,7 +35,7 @@ $GLOBALS["GOTMLS"] = array(
 		"pluginTitle" => "Anti-Malware", 
 		"default_encodings" => array('UTF-8', 'ISO-8859-1', 'windows-1252'), 
 		"skip_dirs" => array(".", ".."), "scanfiles" => array(), "nonce"=>array(),
-		"mt" => ((isset($_REQUEST["mt"])&&GOTMLS_strlen($_REQUEST["mt"])==32)?$_REQUEST["mt"]:md5(microtime(true))), 
+		"mt" => ((isset($_REQUEST["mt"])&&preg_match('/^[0-9\.a-f]{32}$/is', $_REQUEST["mt"]))?$_REQUEST["mt"]:md5(microtime(true))), 
 		"threat_files" => array("htaccess"=>".htaccess","timthumb"=>"thumb.php"), 
 		"apache" => array(),
 		"skip_ext"=>array("png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "psd", "svg", "webp", "doc", "docx", "otf", "ttf", "fla", "flv", "mov", "mp3", "mp4", "pptx", "ppsx", "pdf", "css", "pot", "po", "mo", "so", "exe", "zip", "7z", "gz", "rar"),
@@ -69,7 +69,7 @@ if ((isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "on" || $_SERVER["HTTPS"]
 	$GLOBALS["GOTMLS"]["tmp"]["protocol"] = "https:";
 else
 	$GLOBALS["GOTMLS"]["tmp"]["protocol"] = "http:";
-GOTMLS_define("GOTMLS_script_URI", preg_replace('/\&(last_)?mt=[0-9\.a-f]+/i', '', str_replace('&amp;', '&', GOTMLS_htmlspecialchars($_SERVER["REQUEST_URI"], ENT_QUOTES))).'&mt='.$GLOBALS["GOTMLS"]["tmp"]["mt"]);
+GOTMLS_define("GOTMLS_script_URI", preg_replace('/(^|\&)(last_)?mt=[^\&]++/i', '', str_replace('&amp;', '&', GOTMLS_htmlspecialchars($_SERVER["REQUEST_URI"], ENT_QUOTES))).'&mt='.GOTMLS_htmlspecialchars($GLOBALS["GOTMLS"]["tmp"]["mt"]));
 GOTMLS_define("GOTMLS_plugin_home", "https://gotmls.net/");
 if (function_exists("plugins_url"))
 	GOTMLS_define("GOTMLS_images_path", GOTMLS_fix_url(plugins_url('/', __FILE__)));

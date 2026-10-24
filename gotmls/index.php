@@ -10,7 +10,7 @@ Donate link: https://gotmls.net/donate/
 Description: This Anti-Virus/Anti-Malware plugin searches for Malware and other Virus like threats and vulnerabilities on your server and helps you remove them. It's always growing and changing to adapt to new threats so let me know if it's not working for you.
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.90
+Version: 4.23.91
 Requires PHP: 5.6
 Requires CP: 1.1.1
 */
@@ -554,10 +554,16 @@ function GOTMLS_Firewall_Options() {
 			$save_action = "\n{$lt}div onclick=\"this.style.display='none';\" style='padding: 2px 12px; position: relative; top: -40px; margin: 0 300px 0 130px;' class='updated'$gt\nSave Failed!$lt/div$gt\n";
 	}
 	$sec_opts = $lt.'form method="POST" name="GOTMLS_Form_firewall"'.$gt.$lt.'input type="hidden" id="fw_opt" name="GOTMLS_firewall_option" value="traversal"'.$gt.$lt.'input type="hidden" name="GOTMLS_firewall_value" id="fw_val" value="0"'.$gt.$Firewall_nonce;
-	if (isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["firewall"]) && array($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["firewall"]))
-		foreach ($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["firewall"] as $TP => $VA)
-			if (is_array($VA) && count($VA) > 3 && GOTMLS_strlen($VA[1]) && GOTMLS_strlen($VA[2]))
-				$sec_opts .= $lt.'div style="padding: 0 30px;"'.$gt.$lt.'input type="submit" style="float: right;" value="'.(isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["firewall"]["$TP"]) && $GLOBALS["GOTMLS"]["tmp"]["settings_array"]["firewall"]["$TP"]?"Enable Protection\" onclick=\"setFirewall('$TP', 0);\"$gt$lt".'p'.$gt.$lt.'img src="'.GOTMLS_images_path.'threat.gif"'.$gt.$lt."b$gt$VA[1] (Currently Disabled)":"Disable Protection\" onclick=\"setFirewall('$TP', 1);\"$gt$lt".'p'.$gt.$lt.'img src="'.GOTMLS_images_path.'checked.gif"'.$gt.$lt."b$gt$VA[1] (Automatically Enabled)")."$lt/b$gt$lt/p$gt$VA[2]$lt/div$gt$lt".'hr /'.$gt;
+	if (isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["firewall"]) && array($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["firewall"])) {
+		foreach ($GLOBALS["GOTMLS"]["tmp"]["definitions_array"]["firewall"] as $TP => $VA) {
+			if (is_array($VA) && count($VA) > 3 && GOTMLS_strlen($VA[1]) && GOTMLS_strlen($VA[2])) {
+				$TP_safe = preg_replace('/[^\w]/', "", $TP);
+				$VA_1 = GOTMLS_htmlspecialchars($VA[1]);
+				$VA_2 = GOTMLS_htmlspecialchars($VA[2]);
+				$sec_opts .= $lt.'div style="padding: 0 30px;"'.$gt.$lt.'input type="submit" style="float: right;" value="'.(isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["firewall"]["$TP_safe"]) && $GLOBALS["GOTMLS"]["tmp"]["settings_array"]["firewall"]["$TP_safe"]?"Enable Protection\" onclick=\"setFirewall('$TP_safe', 0);\"$gt$lt".'p'.$gt.$lt.'img src="'.GOTMLS_images_path.'threat.gif"'.$gt.$lt."b$gt$VA_1 (Currently Disabled)":"Disable Protection\" onclick=\"setFirewall('$TP_safe', 1);\"$gt$lt".'p'.$gt.$lt.'img src="'.GOTMLS_images_path.'checked.gif"'.$gt.$lt."b$gt$VA_1 (Automatically Enabled)")."$lt/b$gt$lt/p$gt$VA_2$lt/div$gt$lt".'hr /'.$gt;
+			}
+		}
+	}
 	$style = ' display: none;" id="GOTMLS_patch_button"'.$gt.$lt.'div id="GOTMLS_patch_searching" style="float: right;"'.$gt.__("Checking for session compatibility ...",'gotmls').' '.$lt.'img src="'.GOTMLS_images_path.'wait.gif" height=16 width=16 alt="Wait..." /'.$gt.$lt.'/div'.$gt;
 	$script = "";
 	if ($patch_status) {
@@ -1111,7 +1117,7 @@ var startTime = 0;
 						echo $lt.'input type="hidden" name="'.GOTMLS_htmlspecialchars($name).'" value="'.GOTMLS_htmlspecialchars($value).'"'.$gt;
 				}
 			}
-			echo "\n$lt".'script type="text/javascript"'.$gt.'showhide("inside_'.md5($ScanSettings).'");'.$lt.'/script'.$gt.GOTMLS_box(GOTMLS_htmlspecialchars($_REQUEST["scan_type"]).' Status', $lt.'div id="status_text"'.$gt.$lt.'img src="'.GOTMLS_images_path.'wait.gif" height=16 width=16 alt="..."'.$gt.' '.GOTMLS_Loading_LANGUAGE.$lt.'/div'.$gt.$lt.'div id="status_bar"'.$gt.$lt.'/div'.$gt.$lt.'p id="pause_button" style="display: none; position: absolute; left: 0; text-align: center; margin-left: -30px; padding-left: 50%;"'.$gt.$lt.'input type="button" value="Pause" class="button-primary" onclick="pauseresume(this);" id="resume_button" /'.$gt.$lt.'/p'.$gt.$lt.'div id="status_counts"'.$gt.$lt.'/div'.$gt.$lt.'p id="fix_button" style="display: none; text-align: center;"'.$gt.$lt.'input id="repair_button" type="submit" value="'.GOTMLS_Automatically_Fix_LANGUAGE.'" class="button-primary" onclick="loadIframe(\'Examine Results\');" /'.$gt.$lt.'/p'.$gt);
+			echo "\n$lt".'script type="text/javascript"'.$gt.'showhide("inside_'.md5($ScanSettings).'");'.$lt.'/script'.$gt.GOTMLS_box(GOTMLS_htmlspecialchars($_REQUEST["scan_type"]).' Status', $lt.'div style="position: absolute; margin: 0px; padding: 6px; width: 90%; height: 20px;" id="status_text"'.$gt.$lt.'img src="'.GOTMLS_images_path.'wait.gif" height=16 width=16 alt="..."'.$gt.' '.GOTMLS_Loading_LANGUAGE.$lt.'/div'.$gt.$lt.'div style="padding-top: 32px;" id="status_bar"'.$gt.$lt.'/div'.$gt.$lt.'p id="pause_button" style="display: none; position: absolute; left: 0; text-align: center; margin-left: -30px; padding-left: 50%;"'.$gt.$lt.'input type="button" value="Pause" class="button-primary" onclick="pauseresume(this);" id="resume_button" /'.$gt.$lt.'/p'.$gt.$lt.'div id="status_counts"'.$gt.$lt.'/div'.$gt.$lt.'p id="fix_button" style="display: none; text-align: center;"'.$gt.$lt.'input id="repair_button" type="submit" value="'.GOTMLS_Automatically_Fix_LANGUAGE.'" class="button-primary" onclick="loadIframe(\'Examine Results\');" /'.$gt.$lt.'/p'.$gt);
 			$scan_groups_UL = "";
 			foreach ($scan_groups as $scan_name => $scan_group)
 				$scan_groups_UL .= "\n{$lt}ul name=\"found_$scan_group\" id=\"found_$scan_group\" class=\"GOTMLS_plugin $scan_group\" style=\"background-color: #ccc; display: none; padding: 0;\"$gt{$lt}a class=\"rounded-corners\" name=\"link_$scan_group\" style=\"float: right; padding: 0 4px; margin: 5px 5px 0 30px; line-height: 16px; text-decoration: none; color: #C00; background-color: #FCC; border: solid #F00 1px;\" href=\"#found_top\" onclick=\"showhide('found_$scan_group');\"{$gt}X$lt/a$gt{$lt}h3$gt$scan_name$lt/h3$gt\n".($scan_group=='potential'?$lt.'p'.$gt.' &nbsp; * '.__("NOTE: These are probably not malicious scripts (but it's a good place to start looking <u>IF</u> your site is infected and no Known Threats were found).",'gotmls').$lt.'/p'.$gt:($scan_group=='wp_core'?$lt.'p'.$gt.' &nbsp; * '.sprintf(__("NOTE: We have detected changes to the WordPress Core files on your site. This could be an intentional modification or the malicious work of a hacker. We can restore these files to their original state to preserve the integrity of your original WordPress %s installation.",'gotmls'), GOTMLS_wp_version).' (for more info '.$lt.'a target="_blank" href="'.GOTMLS_plugin_home.'tag/wp-core-files/"'.$gt.__("read my blog",'gotmls').$lt.'/a'.$gt.').'.$lt.'/p'.$gt:$lt.'br /'.$gt)).$lt.'/ul'.$gt;
@@ -1145,7 +1151,7 @@ var startTime = 0;
 			@ob_start();
 			echo "\n{$lt}script type=\"text/javascript\"$gt$li_js\n/*{$lt}!--*"."/";
 			if (!(isset($GLOBALS["GOTMLS"]["tmp"]["settings_array"]["scan_depth"]) && $GLOBALS["GOTMLS"]["tmp"]["settings_array"]["scan_depth"])) {
-				echo GOTMLS_return_threat("dirs", "wait", $dir).GOTMLS_update_status(sprintf(__("Preparing %s",'gotmls'), GOTMLS_replace_dirname($dir)), 0);//GOTMLS_return_threat("skipdirs", "blocked", $dir, GOTMLS_error_link("Directory Scan Depth set to 0, no files will be scanned!"));
+				echo GOTMLS_return_threat("dirs", "wait", $dir).GOTMLS_update_status(GOTMLS_status_text(sprintf(__("Preparing %s",'gotmls'), "..."), GOTMLS_replace_dirname($dir)), 0);//GOTMLS_return_threat("skipdirs", "blocked", $dir, GOTMLS_error_link("Directory Scan Depth set to 0, no files will be scanned!"));
 				$GLOBALS["GOTMLS"]["tmp"]["scanfiles"][GOTMLS_encode($dir)] = GOTMLS_strip4java(GOTMLS_replace_dirname($dir));
 			} elseif (is_dir($dir)) {
 				$GOTMLS_dirs_at_depth[0] = 1;
@@ -1170,7 +1176,7 @@ var startTime = 0;
 					echo GOTMLS_return_threat("dirs", "wait", "db_scan");//.GOTMLS_update_status(__("Starting Database Scan ...",'gotmls'));
 				//else					$DB_scan_JS = "";
 				GOTMLS_flush('script');
-				echo "/*--{$gt}*"."/\nvar scriptSRC = '".GOTMLS_admin_url('GOTMLS_scan', $GOTMLS_nonce_URL.'&mt='.$GLOBALS["GOTMLS"]["tmp"]["mt"].'&GOTMLS_scan=')."';\nvar scanfilesArKeys = ['".implode("','", array_keys($GLOBALS["GOTMLS"]["tmp"]["scanfiles"]))."'$DB_scan_JS];\nvar scanfilesArNames = ['Scanning ".implode("','Scanning ", $GLOBALS["GOTMLS"]["tmp"]["scanfiles"])."'".str_replace("db_scan", "Starting Database Scan ...", $DB_scan_JS).'];
+				echo "/*--{$gt}*"."/\nvar scriptSRC = '".GOTMLS_admin_url('GOTMLS_scan', $GOTMLS_nonce_URL.'&mt='.$GLOBALS["GOTMLS"]["tmp"]["mt"].'&GOTMLS_scan=')."';\nvar scanfilesArKeys = ['".implode("','", array_keys($GLOBALS["GOTMLS"]["tmp"]["scanfiles"]))."'$DB_scan_JS];\nvar scanfilesArNames = ['".implode("','", array_map("GOTMLS_scanfilesArNames", $GLOBALS["GOTMLS"]["tmp"]["scanfiles"]))."'".str_replace("db_scan", "Starting Database Scan ...", $DB_scan_JS).'];
 	var scanfilesI = 0;
 	var stopScanning;
 	var gotStuckOn = -1;
@@ -1237,6 +1243,10 @@ var startTime = 0;
 	} else
 		echo GOTMLS_box(__("Scan History",'gotmls'), GOTMLS_get_scan_history());
 	echo "\n$lt/div$gt$lt/div$gt$lt/div$gt";
+}
+
+function GOTMLS_scanfilesArNames($path_text) {
+	return GOTMLS_status_text("Scanning ...", $path_text);
 }
 
 function GOTMLS_login_error($elementId, $ERROR, $alert_txt = "") {
@@ -1632,7 +1642,8 @@ function GOTMLS_ajax_empty_trash() {
 			$trashmsg = __("Failed to empty the trash.",'gotmls'); 
 	} else
 		$trashmsg = GOTMLS_Invalid_Nonce("");
-	$properties = array("html" => $gl.'head'.$gl."script type='text/javascript'>\nalert('".GOTMLS_strip4java($trashmsg)."');\nif (curDiv = window.parent)\n\tcurDiv.location.reload(false);\nelse\n\twindow.opener.location.reload(false);</script$gl/head", "body" => 'style="margin: 0; padding: 0;"');
+	$admin_url = admin_url("admin.php?page=GOTMLS_View_Quarantine");
+	$properties = array("html" => $gl.'head'.$gl."script type='text/javascript'>\nalert('".GOTMLS_strip4java($trashmsg)."');\nif (curDiv = window.parent)\n\tcurDiv.location.replace('$admin_url');\nelse\n\twindow.opener.location.replace('$admin_url');</script$gl/head", "body" => 'style="margin: 0; padding: 0;"');
 	die(GOTMLS_html_tags(array("html" => array("body" => $trashmsg)), $properties));
 }
 
@@ -1665,7 +1676,7 @@ function GOTMLS_ajax_whitelist() {
 				$file = GOTMLS_decode($_POST["GOTMLS_whitelist"]);
 				$chksum = explode("O", $_POST["GOTMLS_chksum"]."O");
 				if (GOTMLS_strlen($chksum[0]) == 32 && GOTMLS_strlen($chksum[1]) == 32 && is_file($file) && (($filesize = @filesize($file)) == GOTMLS_load_contents($TXT = @file_get_contents($file))) && md5($TXT) == $chksum[0] && GOTMLS_write_quarantine($file, "whitelist", "pending"))
-					$body = "Added $file to Whitelist!<br />\n<iframe style='width: 90%; height: 250px; border: none;' src='".GOTMLS_plugin_home."whitelist.html?whitelist=".GOTMLS_htmlspecialchars($_POST["GOTMLS_whitelist"])."&hash=$chksum[0]&size=$filesize&key=$chksum[1]'></iframe>";
+					$body = "Added $file to Whitelist!<br />\n<li><a target='_blank' href='".GOTMLS_plugin_home."whitelist.html?whitelist=".rawurlencode(GOTMLS_htmlspecialchars($_POST["GOTMLS_whitelist"]))."&hash=$chksum[0]&size=$filesize&key=$chksum[1]'>Would you like to report your reason for whitelisting this file?</a></li>";
 				else
 					$body = "<li>Invalid checksum!</li>";
 			}
@@ -1785,7 +1796,7 @@ function GOTMLS_ajax_fix() {
 				}
 			}
 			$nonce = GOTMLS_set_nonce(__FUNCTION__."1676");
-			die($lt.'div id="check_site_warning" style="background-color: #F00;"'.$gt.sprintf(__("Because some changes were made we need to check to make sure it did not break your site. If this stays Red and the frame below does not load please %srevert the changes%s made during this automated fix process",'gotmls'), $lt.'a href="'.GOTMLS_images_path.'?page=GOTMLS_View_Quarantine&'.GOTMLS_set_nonce(GOTMLS_update_home).'"'.$gt, "$lt/a$gt").'... '.$lt.'span style="color: #F00;"'.$gt.__("Never mind, it worked!",'gotmls')."$lt/span$gt$lt/div$gt$lt".'br /'.$gt.$lt.'iframe id="test_frame" name="test_frame" src="'.GOTMLS_admin_url('GOTMLS_View_Quarantine', 'check_site=1&'.$nonce).'" style="width: 100%; height: 200px"'."$gt$lt/iframe$gt$li_js/*--$gt*"."/\nalert_repaired(0);\n$lt/script$gt\n$HTML_safe[1]");
+			die($lt.'div id="check_site_warning" style="background-color: #F00;"'.$gt.sprintf(__("Because some changes were made we need to check to make sure it did not break your site. If this stays Red and the frame below does not load please %srevert the changes%s made during this automated fix process",'gotmls'), $lt.'a href="'.GOTMLS_admin_url('GOTMLS_View_Quarantine', GOTMLS_set_nonce(GOTMLS_update_home)).'"'.$gt, "$lt/a$gt").'... '.$lt.'span style="color: #F00;"'.$gt.__("Never mind, it worked!",'gotmls')."$lt/span$gt$lt/div$gt$lt".'br /'.$gt.$lt.'iframe id="test_frame" name="test_frame" src="'.GOTMLS_admin_url('GOTMLS_View_Quarantine', 'check_site=1&'.$nonce).'" style="width: 100%; height: 200px"'."$gt$lt/iframe$gt$li_js/*--$gt*"."/\nalert_repaired(0);\n$lt/script$gt\n$HTML_safe[1]");
 		} else
 			die(GOTMLS_html_tags(array("html" => array("body" => $lt."script type=\"text/javascript\"$gt\nwindow.parent.showhide('GOTMLS_iFrame', true);\nalert('".__("Nothing Selected to be Changed!",'gotmls')."');\n$lt/script$gt".__("Done!",'gotmls')))));
 	} else

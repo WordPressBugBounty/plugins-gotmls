@@ -7,10 +7,10 @@ Donate link: https://gotmls.net/donate/
 Tags: anti-malware, security, scanner, brute-force, firewall
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.90
-Stable tag: 4.23.90
+Version: 4.23.91
+Stable tag: 4.23.91
 Requires at least: 3.3
-Tested up to: 7.0
+Tested up to: 7.1.3
 
 This Anti-Malware scanner searches for Malware, Viruses, and other security threats and vulnerabilities on your server and it helps you fix them.
 
@@ -99,6 +99,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. The Quarantine showing threats that have been fix already.
 
 == Changelog ==
+
+= 4.23.91 =
+* Fixed CSS display issue in the alignment of the scan path text.
+* Hardened nonce token and removed debug output to prevent stored XSS via CSRF.
+* Checked code for compatibility with WordPress 7.1.3 and ClassicPress 2.7.4.
 
 = 4.23.90 =
 * Incremented version number to force update of index file that was missing changes from the last update.
@@ -530,6 +535,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * First versions available for WordPress (code removed, no longer compatible).
 
 == Upgrade Notice ==
+
+= 4.23.91 =
+Fixed CSS display issue, hardened nonce token, removed debug output, and checked code for compatibility with WordPress 7.1.3 and ClassicPress 2.7.4.
 
 = 4.23.90 =
 Incremented version number to force update of index file that was missing changes from the last update.

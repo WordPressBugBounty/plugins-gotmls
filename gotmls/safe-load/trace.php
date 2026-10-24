@@ -4,7 +4,7 @@
  * @package GOTMLS
 */
 
-define("GOTMLS_Version", '4.23.90');
+define("GOTMLS_Version", '4.23.91');
 define("GOTMLS_SAFELOAD_DIR", dirname(__FILE__)."/");
 define("GOTMLS_CHMOD_FILE", 0644);
 define("GOTMLS_CHMOD_DIR", 0755);
@@ -15,7 +15,21 @@ function GOTMLS_define($DEF, $val) {
 		define($DEF, $val);
 }
 
-function GOTMLS_safe_ip($ip) {
+function GOTMLS_safe_ip($ip = null) {
+	if ($ip === null) {
+		$ip = (isset($_SERVER["REMOTE_ADDR"]) && is_string($_SERVER["REMOTE_ADDR"])) ? $_SERVER["REMOTE_ADDR"] : "";
+		if (strlen($ip) && defined("GOTMLS_TRUSTED_PROXIES") && is_string(GOTMLS_TRUSTED_PROXIES) && in_array($ip, array_map("trim", explode(",", GOTMLS_TRUSTED_PROXIES)), true)) {
+			foreach (array("HTTP_CF_CONNECTING_IP", "HTTP_X_FORWARDED_FOR") as $header) {
+				if (isset($_SERVER[$header]) && is_string($_SERVER[$header])) {
+					$parts = explode(",", $_SERVER[$header]);
+					$forwarded = trim($parts[0]);
+					if (filter_var($forwarded, FILTER_VALIDATE_IP))
+						return $forwarded;
+				}
+			}
+		} elseif (strlen($ip) < 7)
+			$ip = microtime(true);
+	}
 	return substr(preg_replace('/[^\d\.\:a-f]/i', "", $ip), 0, 40);
 }
 
@@ -26,6 +40,20 @@ function GOTMLS_get_current_user_id($return = 0) {
 }
 
 function GOTMLS_save_contents($file, $content) {
+	if (!is_string($file) || !strlen($file) || strpos($file, "\0") !== false || strpos($file, "://") !== false || $gs = preg_match('#^(/|[A-Za-z]:\\\\)#', $file))
+		return false;
+	$parts = explode("/", preg_replace('#//++#', '/', str_replace("\\", "/", $file)));
+	$file_path = array_shift($parts);
+	do {
+		if ($parts[0] === ".." || $parts[0] === ".")
+			return false;
+	} while (file_exists($file_path .= "/".array_shift($parts)) && isset($parts[0]));
+	$root_path = realpath(dirname(ABSPATH));
+	if (($real_path = realpath(dirname($file_path))) === false || strlen($root_path) >= strlen($real_path) || $root_path != substr($real_path, 0, strlen($root_path)))
+		return false;
+	$file = "$real_path/".basename($file_path);
+	if (count($parts))
+		$file .= "/".implode("/", $parts);
 	$chmoded_file = false;
 	$chmoded_dir = false;
 	if ((is_dir(dirname($file)) || @mkdir(dirname($file), GOTMLS_CHMOD_DIR, true)) && !is_writable(dirname($file)) && ($GOTMLS_chmod_dir = @fileperms(dirname($file))))
@@ -66,7 +94,8 @@ function GOTMLS_create_session_file($GOTMLS_server_times = 0) {
 	return $GOTMLS_server_times;
 }
 
-define("GOTMLS_REMOTEADDR", GOTMLS_safe_ip(isset($_SERVER["HTTP_CF_CONNECTING_IP"])?$_SERVER["HTTP_CF_CONNECTING_IP"]:(isset($_SERVER["HTTP_X_FORWARDED_FOR"])?$_SERVER["HTTP_X_FORWARDED_FOR"]:(isset($_SERVER["REMOTE_ADDR"])?$_SERVER["REMOTE_ADDR"]:microtime(true)))));
+
+define("GOTMLS_REMOTEADDR", GOTMLS_safe_ip());
 
 $GOTMLS_mu = array('<?php
 /**

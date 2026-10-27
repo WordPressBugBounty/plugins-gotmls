@@ -7,8 +7,8 @@ Donate link: https://gotmls.net/donate/
 Tags: anti-malware, security, scanner, brute-force, firewall
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html#license-text
-Version: 4.23.91
-Stable tag: 4.23.91
+Version: 4.23.92
+Stable tag: 4.23.92
 Requires at least: 3.3
 Tested up to: 7.1.3
 
@@ -99,6 +99,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. The Quarantine showing threats that have been fix already.
 
 == Changelog ==
+
+= 4.23.92 =
+* Fixed path condition in save_contents function that prevented Brute-Force patch from installing (thank to Sean Dempsey for finding this error).
 
 = 4.23.91 =
 * Fixed CSS display issue in the alignment of the scan path text.
@@ -535,6 +538,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * First versions available for WordPress (code removed, no longer compatible).
 
 == Upgrade Notice ==
+
+= 4.23.92 =
+Fixed path condition in save_contents function that prevented Brute-Force patch from installing.
 
 = 4.23.91 =
 Fixed CSS display issue, hardened nonce token, removed debug output, and checked code for compatibility with WordPress 7.1.3 and ClassicPress 2.7.4.

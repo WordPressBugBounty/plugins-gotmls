@@ -4,7 +4,7 @@
  * @package GOTMLS
 */
 
-define("GOTMLS_Version", '4.23.91');
+define("GOTMLS_Version", '4.23.92');
 define("GOTMLS_SAFELOAD_DIR", dirname(__FILE__)."/");
 define("GOTMLS_CHMOD_FILE", 0644);
 define("GOTMLS_CHMOD_DIR", 0755);
@@ -40,7 +40,7 @@ function GOTMLS_get_current_user_id($return = 0) {
 }
 
 function GOTMLS_save_contents($file, $content) {
-	if (!is_string($file) || !strlen($file) || strpos($file, "\0") !== false || strpos($file, "://") !== false || $gs = preg_match('#^(/|[A-Za-z]:\\\\)#', $file))
+	if (!is_string($file) || !strlen($file) || strpos($file, "\0") !== false || strpos($file, "://") !== false || !preg_match('#^(/|[A-Za-z]:\\\\)#', $file))
 		return false;
 	$parts = explode("/", preg_replace('#//++#', '/', str_replace("\\", "/", $file)));
 	$file_path = array_shift($parts);
